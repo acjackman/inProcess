@@ -7,13 +7,11 @@ require 'fileutils'
 require 'active_support/all' # Get all Rails Functions for Dealing with Dates
 
 # Files and Locations
-
-inboxDirectory = '/Users/Adam/Dropbox/Dump/'
-inbox = inboxDirectory+'inbox.md'
-
 inxDirectory = '/Users/Adam/Dropbox/Notes/'
 inxStorage = '/Users/Adam/Desktop/'
 # inxStorage   = '/Users/Adam/Dropbox/Library/Logs/inxStorage/'
+
+inbox = inxDirectory+'inbox.md'
 
 statsDirectory = '/Users/Adam/Dropbox/Active/DataLogs/'
 
