@@ -24,7 +24,7 @@ item = Array.new
 i=0
 removeBlank=false
 
-output = "# Inbox\n`inbox.md` created "+Time.now.to_formatted_s(:long)+"\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n"
+output = "# Inbox\n`inbox.md` created "+Time.now.to_formatted_s(:long)+"\n\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n"
 
 # Get array of files, starting with `inbox.md` then listing all inx in alphabetical order, then use where in loop
 filesToProcess = Array.new
@@ -114,7 +114,7 @@ end
 
 
 # Determine what to do with inbox file
-if output.split("\n").count > 3
+if output.split("\n").count > 4
   File.open(inbox,'w').write(output)
   puts "Remaining items written to `inbox.md`. Process Soon!"
 else
