@@ -1,12 +1,15 @@
-Add oTask as task Parser:
-	- Find out how to make `system` call
-	- Find way to make bullet notes go through
+Add oTask as task Parser: @done
+	- Find out how to make `system` call @done(2012-08-24)
+	- Find way to make bullet notes go through @done(2012-08-24)
 
-Add Fantastical AppleScript calendar Parser:
-	- Write AppleScript to take string and parse
-	- Use !@ as the key at the beginning of the line
-	- should be a `system()` call to `osascript`
+Add Fantastical AppleScript calendar Parser: @done
+	- Write AppleScript to take string and parse @done(2012-08-24)
+	- Use !@ as the key at the beginning of the line @done(2012-08-24)
+	- should be a `system()` call to `osascript` @done(2012-08-24)
+
+- Create process fuction and run it at the end of every file, as well as at the beginning of a line
+	or run it at the end of a line?
 
 Write Documentation:
 	- Write README
-	- Write Help command @done(2012-08-24)
+	- Write Help command

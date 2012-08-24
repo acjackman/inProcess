@@ -69,6 +69,9 @@ filesToProcess.each do |file|
       elsif item.first == "Cooking"
         File.open(cooking, 'a').write(item[1])
         puts "* Cooking Recorded"
+      elsif item.first == "Event"
+        system("osascript -e 'tell application \"Fantastical\" to parse sentence \"#{item[1]}\" with add immediately'")
+        puts "* Event added to calendar"
       end
     
       newItem = false
@@ -87,6 +90,9 @@ filesToProcess.each do |file|
       item.push(line.chomp[3..-1].strip)
     elsif ((item.first == "Task") and (line.chomp[0..1] == "* "))                         # Task Note
       item.push(line.chomp.strip)
+    elsif line.chomp.start_with?('!@ ')                                                   # Calander Event
+      item.push("Event")
+      item.push(line.chomp[3..-1].strip)
     elsif (line.chomp =~ /[A-z 0-9]+\. [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}/)     # Statistic
       item.push("Statistic")
       line.chomp.strip.split('.').each { |x| item.push(x.strip) }
