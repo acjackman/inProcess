@@ -1,0 +1,12 @@
+Add oTask as task Parser:
+	- Find out how to make `system` call
+	- Find way to make bullet notes go through
+
+Add Fantastical AppleScript calendar Parser:
+	- Write AppleScript to take string and parse
+	- Use !@ as the key at the beginning of the line
+	- should be a `system()` call to `osascript`
+
+Write Documentation:
+	- Write README
+	- Write Help command @done(2012-08-24)

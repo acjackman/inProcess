@@ -12,7 +12,8 @@ inboxDirectory = '/Users/Adam/Dropbox/Dump/'
 inbox = inboxDirectory+'inbox.md'
 
 inxDirectory = '/Users/Adam/Dropbox/Notes/'
-inxStorage   = '/Users/Adam/Dropbox/Library/Logs/inxStorage/'
+inxStorage = '/Users/Adam/Desktop/'
+# inxStorage   = '/Users/Adam/Dropbox/Library/Logs/inxStorage/'
 
 statsDirectory = '/Users/Adam/Dropbox/Active/DataLogs/'
 
@@ -43,24 +44,34 @@ end
 
 # Process Each File
 filesToProcess.each do |file|
+  output += "\n" # Make sure to have space between files for future processing
   File.open(file).readlines.each do |line|
   
     if newItem
       if item.first == "Task"
         taskNote=""
         item.drop(2).each { |x| taskNote += x + "\n" } 
-        Appscript.app('OmniFocus').default_document.make(:new => :inbox_task, 
-                                      :with_properties => {name: item[1], note: taskNote })
+        
+        
+        oTaskCommand= "otask '" + item[1]
+        if !taskNote.blank?
+          oTaskCommand += " (#{taskNote})'"
+        else
+          oTaskCommand += "'"
+        end
+        print "* "
+        system(oTaskCommand)
                                           
       elsif item.first == "Statistic"
         # puts item.drop(2).each {|x| x}.join(',')
         File.open(statsDirectory+item[1].gsub(/\s+/, "")+".csv", 'a') {|f| f.write(item.drop(2).each {|x| x}.join(',')+"\n")}
-      
+        puts "* #{item[1]} Statistic Recorded"
       elsif item.first == "LifeTrack"
         File.open(statsDirectory+"LifeTrack.txt", 'a') { |f| f.write(item[1]+',"'+item[2]+"\"\n") }
-    
+        puts "* LifeTrack Recorded"
       elsif item.first == "Cooking"
         File.open(cooking, 'a').write(item[1])
+        puts "* Cooking Recorded"
       end
     
       newItem = false
@@ -82,14 +93,17 @@ filesToProcess.each do |file|
     elsif (line.chomp =~ /[A-z 0-9]+\. [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}/)     # Statistic
       item.push("Statistic")
       line.chomp.strip.split('.').each { |x| item.push(x.strip) }
+      newItem = true
     elsif (line.chomp =~ /Life Track: [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2} ---/) # Life Track
       item.push("LifeTrack")
       item.push(line.chomp.split(":",2)[1].strip.split(' ---',2)[0]) # Date 
       item.push(line.chomp.split(":",2)[1].strip.split(' ---',2)[1].strip) # Event
+      newItem = true
     elsif (line.chomp =~ /[0-9]{4}-[0-9]{2}-[0-9]{2} (Breakfast|Lunch|Dinner|Snack|Desert):/) # Cooking Lesson
       item.push("Cooking")
       item.push(line.chomp.strip)
-    elsif (line.chomp == "# Inbox" || line.chomp =~ /`inbox.md` created / || line.chomp == "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
+    elsif (line.chomp == "# Inbox" || line.chomp =~ /`inbox.md` created / || 
+           line.chomp == "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
       # Do Nothing (Remove Blank)
     elsif !removeBlank
       output += line.chomp+"\n"
