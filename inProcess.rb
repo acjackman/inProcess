@@ -8,8 +8,7 @@ require 'active_support/all' # Get all Rails Functions for Dealing with Dates
 
 # Files and Locations
 inxDirectory = '/Users/Adam/Dropbox/Notes/'
-inxStorage = '/Users/Adam/Desktop/'
-# inxStorage   = '/Users/Adam/Dropbox/Library/Logs/inxStorage/'
+inxStorage   = '/Users/Adam/Dropbox/Library/Logs/inxStorage/'
 
 inbox = inxDirectory+'inbox.md'
 
