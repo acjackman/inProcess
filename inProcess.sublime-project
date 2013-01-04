@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		},
+        {
+            "path": "../../Active/DataLogs/",
+            "file_exclude_patterns": ".*"
+        },
+        {
+            "path": "../../Notes",
+            "file_include_patterns": ["*inx*", "inbox.md"],
+            "folder_exclude_patterns": ["Connections"]
+        }
+	]
+}
