@@ -58,7 +58,12 @@ filesToProcess.each do |file|
         end
         print "* "
         system(oTaskCommand)
+      elsif item.first == "Food"
+        foodLog=""
+        item.drop(1).each { |x| foodLog += x + "\n" }
 
+        File.open(statsDirectory+"Food.txt", 'a').write(foodLog)
+        puts "* Meal Recorded"
       elsif item.first == "Statistic"
         # puts item.drop(2).each {|x| x}.join(',')
         File.open(statsDirectory+item[1].gsub(/\s+/, "")+".csv", 'a') {|f| f.write(item.drop(2).each {|x| x}.join(',')+"\n")}
@@ -80,7 +85,7 @@ filesToProcess.each do |file|
 
     if line.chomp.blank?
       newItem = true
-      if ["Task", "Statistic","LifeTrack","Cooking"].include?(item.first)
+      if ["Task", "Statistic","LifeTrack","Cooking","Food"].include?(item.first)
         removeBlank = true
       end
     end
@@ -89,6 +94,11 @@ filesToProcess.each do |file|
       item.push("Task")
       item.push(line.chomp[3..-1].strip)
     elsif ((item.first == "Task") and (line.chomp[0..1] == "* "))                         # Task Note
+      item.push(line.chomp.strip)
+    elsif (line.chomp =~ /Food [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}/)
+      item.push("Food")
+      item.push("\n" + line.chomp.split(' ')[1]) # Date
+    elsif ((item.first == "Food") and (line.chomp[0..1]) != "")
       item.push(line.chomp.strip)
     elsif line.chomp.start_with?('!@ ')                                                   # Calander Event
       item.push("Event")
@@ -117,7 +127,7 @@ filesToProcess.each do |file|
   end
 end
 
-if newItem
+if item.length !=
   if item.first == "Task"
     taskNote=""
     item.drop(2).each { |x| taskNote += x + "\n" }
@@ -131,7 +141,12 @@ if newItem
     end
     print "* "
     system(oTaskCommand)
+  elsif item.first == "Food"
+    foodLog=""
+    item.drop(1).each { |x| foodLog += x + "\n" }
 
+    File.open(statsDirectory+"Food.txt", 'a').write(foodLog)
+    puts "* Meal Recorded"
   elsif item.first == "Statistic"
     # puts item.drop(2).each {|x| x}.join(',')
     File.open(statsDirectory+item[1].gsub(/\s+/, "")+".csv", 'a') {|f| f.write(item.drop(2).each {|x| x}.join(',')+"\n")}

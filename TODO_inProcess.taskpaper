@@ -7,11 +7,16 @@ Add Fantastical AppleScript calendar Parser: @done
 	- Use !@ as the key at the beginning of the line @done(2012-08-24)
 	- should be a `system()` call to `osascript` @done(2012-08-24)
 
-- Create process fuction and run it at the end of every file, as well as at the beginning of a line
-	or run it at the end of a line? 
-	Make sure it gets run on the last line, because it might not
-- Statistic class should recognize quoted strings in the third+ column and make them one continuous string 
-
+- Statistic class should recognize quoted strings in the third+ column and make them one continuous string
 Write Documentation:
 	- Write README
 	- Write Help command
+Make Stack Process Function:
+	or run it at the end of a line?
+	Make sure it gets run on the last line, because it might not
+	- research modifying enviornment variables in function
+Add Food Log to Processing: @done
+	- check multiple line processing from task @done(2013-01-04)
+	- write regex @done(2013-01-04)
+	
+could possibly rewrite parser to pull lines as it neads it, but this works
