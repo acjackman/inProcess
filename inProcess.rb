@@ -49,7 +49,6 @@ filesToProcess.each do |file|
         taskNote=""
         item.drop(2).each { |x| taskNote += x + "\n" }
 
-
         oTaskCommand= "otask '" + item[1]
         if !taskNote.blank?
           oTaskCommand += " (#{taskNote})'"
@@ -70,7 +69,10 @@ filesToProcess.each do |file|
         puts "* #{item[1]} Statistic Recorded"
       elsif item.first == "LifeTrack"
         File.open(statsDirectory+"LifeTrack.txt", 'a') { |f| f.write(item[1]+',"'+item[2]+"\"\n") }
-        puts "* LifeTrack Recorded"
+        puts "* Life Track Recorded"
+      elsif item.first == "HealthTrack"
+        File.open(statsDirectory+"HealthTrack.txt", 'a') { |f| f.write(item[1]+',"'+item[2]+"\"\n") }
+        puts "* Health Track Recorded"
       elsif item.first == "Cooking"
         File.open(cooking, 'a').write(item[1])
         puts "* Cooking Recorded"
@@ -112,6 +114,11 @@ filesToProcess.each do |file|
       item.push(line.chomp.split(":",2)[1].strip.split(' ---',2)[0]) # Date
       item.push(line.chomp.split(":",2)[1].strip.split(' ---',2)[1].strip) # Event
       newItem = true
+    elsif (line.chomp =~ /Health Track: [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2} ---/ or line.chomp =~ /Medical: [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2} ---/) # Life Track
+      item.push("HealthTrack")
+      item.push(line.chomp.split(":",2)[1].strip.split(' ---',2)[0]) # Date
+      item.push(line.chomp.split(":",2)[1].strip.split(' ---',2)[1].strip) # Event
+      newItem = true
     elsif (line.chomp =~ /[0-9]{4}-[0-9]{2}-[0-9]{2} (Breakfast|Lunch|Dinner|Snack|Desert):/) # Cooking Lesson
       item.push("Cooking")
       item.push(line.chomp.strip)
@@ -131,7 +138,6 @@ if item.length !=
   if item.first == "Task"
     taskNote=""
     item.drop(2).each { |x| taskNote += x + "\n" }
-
 
     oTaskCommand= "otask '" + item[1]
     if !taskNote.blank?
@@ -153,7 +159,10 @@ if item.length !=
     puts "* #{item[1]} Statistic Recorded"
   elsif item.first == "LifeTrack"
     File.open(statsDirectory+"LifeTrack.txt", 'a') { |f| f.write(item[1]+',"'+item[2]+"\"\n") }
-    puts "* LifeTrack Recorded"
+    puts "* Life Track Recorded"
+  elsif item.first == "HealthTrack"
+    File.open(statsDirectory+"HealthTrack.txt", 'a') { |f| f.write(item[1]+',"'+item[2]+"\"\n") }
+    puts "* Health Track Recorded"
   elsif item.first == "Cooking"
     File.open(cooking, 'a').write(item[1])
     puts "* Cooking Recorded"
