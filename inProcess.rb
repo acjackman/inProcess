@@ -5,10 +5,13 @@ require 'appscript'
 require 'date'
 require 'fileutils'
 require 'active_support/all' # Get all Rails Functions for Dealing with Dates
+require 'logger'
+require 'json'
 
 # Files and Locations
 inxDirectory = '/Users/Adam/Dropbox/Notes/'
 inxStorage   = '/Users/Adam/Dropbox/Library/Logs/inxStorage/'
+log = Logger.new(inxStorage + 'log.txt')
 
 inbox = inxDirectory+'inbox.md'
 
@@ -38,12 +41,12 @@ Dir.entries(inxDirectory).each do |f|
   end
 end
 
-
+log.debug '{"filesToProcess":' + filesToProcess.to_json + '}'
 # Process Each File
 filesToProcess.each do |file|
   output += "\n" # Make sure to have space between files for future processing
   File.open(file).readlines.each do |line|
-
+    log.debug '{"new":' + newItem.to_json  + ',"item": ' + item.to_json + '}'
     if newItem
       if item.first == "Task"
         taskNote=""
@@ -59,7 +62,7 @@ filesToProcess.each do |file|
         system(oTaskCommand)
       elsif item.first == "Food"
         foodLog=""
-        item.drop(1).each { |x| foodLog += x + "\n" }
+        item.drop(1).each { |x| foodLog += item[1] + "," + x}
 
         File.open(statsDirectory+"Food.txt", 'a').write(foodLog)
         puts "* Meal Recorded"
@@ -130,7 +133,6 @@ filesToProcess.each do |file|
     end
 
     removeBlank=false
-
   end
 end
 
@@ -149,7 +151,7 @@ if item.length !=
     system(oTaskCommand)
   elsif item.first == "Food"
     foodLog=""
-    item.drop(1).each { |x| foodLog += x + "\n" }
+    item.drop(1).each { |x| foodLog += item[1] + "," + x}
 
     File.open(statsDirectory+"Food.txt", 'a').write(foodLog)
     puts "* Meal Recorded"
