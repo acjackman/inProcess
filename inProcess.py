@@ -86,9 +86,9 @@ class Task(Trackable):
 
     def record(self):
         if self.notes == []:
-            os.system("otask '" + self.taskstring + "'")
+            os.system("otask '" + self.taskstring + "'" + "> /dev/null 2>&1")
         else:
-            os.system("otask '" + self.taskstring + " (" + '\n'.join(self.notes) + ")'")
+            os.system("otask '" + self.taskstring + " (" + '\n'.join(self.notes) + ")'" + "> /dev/null 2>&1")
 
     @classmethod
     def identify(cls, string):
