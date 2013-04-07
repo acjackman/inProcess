@@ -2,6 +2,7 @@
 import optparse
 import re
 import os
+from os.path import expanduser
 import csv
 from datetime import datetime
 import shutil
@@ -17,7 +18,7 @@ class Parseable(object):
     def __init__(self):
         super(Parseable, self).__init__()
     multiline = False
-    settings = json.loads(open('Test/settings.json', 'rb').read())
+    settings = json.loads(open(expanduser('~/.inprocess.json'), 'rb').read())
 
     def record(self):
         pass
@@ -173,7 +174,7 @@ class Calendar(Parseable):
 
 def main():
     # Set Variables
-    settings = json.loads(open('Test/settings.json', 'rb').read())
+    settings = json.loads(open(expanduser('~/.inprocess.json'), 'rb').read())
     inbox_dir = settings['inbox_dir']
     inbox_file = settings['inbox_file']
     storage_dir = settings['storage_dir']
