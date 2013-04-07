@@ -13,6 +13,7 @@ class Trackable(object):
     def __init__(self):
         super(Trackable, self).__init__()
     multiline = False
+    settings = json.loads(open('Test/settings.json', 'rb').read())
 
     def record(self):
         pass
@@ -63,8 +64,7 @@ class Statistic(Trackable):
         self.extras = m_obj.group(3).split('. ')
 
     def record(self):
-        settings = json.loads(open('Test/settings.json', 'rb').read())
-        data_dir = settings['data_dir']
+        data_dir = self.settings['data_dir']
         with open(data_dir + self.StatName.replace(' ', '')+'.csv', 'ab') as csvfile:
             spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow([self.time] + filter(None, self.extras))
