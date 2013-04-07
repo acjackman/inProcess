@@ -7,6 +7,28 @@ from datetime import datetime
 import shutil
 
 
+class Inbox(object):
+    """docstring for Inbox"""
+    p = re.compile(r"# Inbox")
+
+    lines = 4
+
+    def __init__(self, arg):
+        super(Inbox, self).__init__()
+        self.arg = arg
+
+    def record(self):
+        pass
+
+    @classmethod
+    def identify(cls, string):
+        return cls.p.match(string)
+
+    @classmethod
+    def identify_end(cls, string):
+        return re.match(r"([\*-] ){4,}", string)
+
+
 class Statistic(object):
     """docstring for Statistic"""
     p = re.compile((
@@ -14,6 +36,8 @@ class Statistic(object):
         r"([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})"
         r"(.*)")
     )
+
+    lines = 1
 
     def __init__(self, string):
         super(Statistic, self).__init__()
@@ -36,6 +60,8 @@ class Task(object):
     """docstring for Task"""
     p = re.compile(r'!- (.*)')
 
+    lines = 1
+
     def __init__(self, string):
         super(Task, self).__init__()
         self.taskstring = self.p.match(string).group(1)
@@ -52,7 +78,8 @@ def main():
     p = optparse.OptionParser()
     p.add_option('--person', '-p', default="world")
     options, arguments = p.parse_args()
-    singles = [Statistic, Task]
+    trackables = [Inbox, Statistic, Task]
+
     # Set Variables
     inbox_dir = "/Users/Adam/Dropbox/Active/inProcess/Test/Inbox/"
     inbox_file = "/Users/Adam/Dropbox/Active/inProcess/Test/inbox.md"
@@ -69,7 +96,7 @@ def main():
     new_files = [inbox_store] + [storage_dir + file for file in files]
 
     # Setup output
-    inbox_header = "# Inbox\n`inbox.md` created " + now.strftime('%B %d, %Y %H:%M:%S') + "\n\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\n"
+    inbox_header = "# Inbox\n`inbox.md` created " + now.strftime('%B %d, %Y %H:%M:%S') + "\n\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n"
     inbox_contents = ''
 
     # Loop through the list of files
@@ -78,11 +105,18 @@ def main():
         line = f.readline()
         while line != '':
             # Test the single line trackables
-            for singleliner in singles:
-                if singleliner.identify(line):
-                    singleliner(line).record()
+            for track in trackables:
+                if track.identify(line):
+                    if track.lines > 1:
+                        lines = []
+                        while track.identify_end(line) is None:
+                            lines = lines + [line]
+                            line = f.readline()
+                        track(lines).record()
+                    else:
+                        track(line).record()
                     break
-            else:  # Runs if no singleliner matches
+            else:  # Runs if no track matches
                 inbox_contents = inbox_contents + line
             line = f.readline()
         # Move the file that has been read to storage
@@ -90,8 +124,9 @@ def main():
     # Write inbox contents to file
     if inbox_contents != '':
         f = open(inbox_file, 'wb')
+        inbox_contents = inbox_header + inbox_contents
         inbox_contents = re.sub(r"\n\n\n+", r"\n\n", inbox_contents)
-        f.write(inbox_header + inbox_contents)
+        f.write(inbox_contents)
 
 if __name__ == '__main__':
     main()
