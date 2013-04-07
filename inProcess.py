@@ -43,7 +43,7 @@ class Inbox(Parseable):
         self.arg = arg
 
     def record(self):
-        pass
+        return True
 
     @classmethod
     def identify(cls, string):
@@ -63,7 +63,7 @@ class CMD(Parseable):
         self.arg = arg
 
     def record(self):
-        pass
+        return True
 
     @classmethod
     def identify(cls, string):
@@ -100,6 +100,7 @@ class Food(Parseable):
         with open(data_dir + 'Food.csv', 'ab') as csvfile:
             spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow([self.time, self.location, self.frm] + filter(None, self.items))
+        return True
 
     @classmethod
     def identify(cls, string):
@@ -124,6 +125,7 @@ class Journal(Parseable):
     def record(self):
         cmd = Popen(['dayone new'], stdout=PIPE, stdin=PIPE, stderr=STDOUT, shell=True)
         results = cmd.communicate(input='\n'.join(self.lines))
+        return results[0].startswith('New entry')
 
     @classmethod
     def identify(cls, string):
@@ -154,6 +156,7 @@ class Statistic(Parseable):
         with open(data_dir + self.StatName.replace(' ', '')+'.csv', 'ab') as csvfile:
             spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow([self.time] + filter(None, self.extras))
+        return True
 
     @classmethod
     def identify(cls, string):
@@ -178,6 +181,7 @@ class LifeTrack(Parseable):
         with open(data_dir + 'LifeTrack.csv', 'ab') as csvfile:
             spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow([self.time, self.Event])
+        return True
 
     @classmethod
     def identify(cls, string):
@@ -202,6 +206,7 @@ class HealthTrack(Parseable):
         with open(data_dir + 'HealthTrack.csv', 'ab') as csvfile:
             spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow([self.time, self.Event])
+        return True
 
     @classmethod
     def identify(cls, string):
@@ -220,9 +225,12 @@ class Task(Parseable):
 
     def record(self):
         if self.notes == []:
-            os.system("otask '" + self.taskstring + "'" + "> /dev/null 2>&1")
+            cmd_string = self.taskstring
         else:
-            os.system("otask '" + self.taskstring + " (" + '\n'.join(self.notes) + ")'" + "> /dev/null 2>&1")
+            cmd_string = self.taskstring + " (" + '\n'.join(self.notes) + ")"
+        cmd = Popen(['otask', cmd_string], stdout=PIPE, stdin=PIPE, stderr=STDOUT, shell=False)
+        results = cmd.communicate()
+        return results[0].startswith('Task added')
 
     @classmethod
     def identify(cls, string):
@@ -243,6 +251,7 @@ class Calendar(Parseable):
 
     def record(self):
         os.system("osascript -e 'tell application \"Fantastical\" to parse sentence \"" + self.eventstring + "\" with add immediately'")
+        return True
 
     @classmethod
     def identify(cls, string):
@@ -306,9 +315,11 @@ def main():
                         while track.identify_end(line) is None:
                             lines = lines + [line]
                             line = f.readline()
-                        track(lines).record()
+                        if not track(lines).record():
+                            inbox_contents = inbox_contents + ''.join(lines)
                     else:
-                        track(line).record()
+                        if not track(line).record():
+                            inbox_contents = inbox_contents + line
                     break
             else:  # Runs if we don't know how to parse the current line
                 inbox_contents = inbox_contents + line
