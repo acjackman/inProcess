@@ -3,6 +3,7 @@ import optparse
 import re
 import os
 from os.path import expanduser
+from subprocess import Popen, PIPE, STDOUT
 import csv
 from datetime import datetime
 import shutil
@@ -18,7 +19,7 @@ class Parseable(object):
     def __init__(self):
         super(Parseable, self).__init__()
     multiline = False
-    settings = json.loads(open(expanduser('~/.inprocess.json'), 'rb').read())
+    settings = json.loads(open(expanduser('Test/.inprocess.json'), 'rb').read())
 
     def record(self):
         pass
@@ -99,6 +100,30 @@ class Food(Parseable):
         with open(data_dir + 'Food.csv', 'ab') as csvfile:
             spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow([self.time, self.location, self.frm] + filter(None, self.items))
+
+    @classmethod
+    def identify(cls, string):
+        return cls.p.match(string)
+
+    @classmethod
+    def identify_end(cls, string):
+        return re.match(r"([\*-] ){5,}", string)
+
+
+class Journal(Parseable):
+    """docstring for Journal"""
+    p = re.compile(r'Journal ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})')
+    multiline = True
+
+    def __init__(self, strings):
+        super(Journal, self).__init__()
+        strings = map(lambda s: s.strip(), strings)
+        self.time = self.p.match(strings[0]).group(1)
+        self.lines = strings[1:]
+
+    def record(self):
+        cmd = Popen(['dayone new'], stdout=PIPE, stdin=PIPE, stderr=STDOUT, shell=True)
+        results = cmd.communicate(input='\n'.join(self.lines))
 
     @classmethod
     def identify(cls, string):
@@ -230,7 +255,7 @@ class Calendar(Parseable):
 
 def main():
     # Set Variables
-    settings = json.loads(open(expanduser('~/.inprocess.json'), 'rb').read())
+    settings = json.loads(open(expanduser('Test/.inprocess.json'), 'rb').read())
     inbox_dir = settings['inbox_dir']
     inbox_file = settings['inbox_file']
     storage_dir = settings['storage_dir']
@@ -250,7 +275,7 @@ def main():
     options, arguments = p.parse_args()
 
     # List parseable things
-    trackables = [Statistic, Task, Food, Calendar, LifeTrack, HealthTrack, Inbox]
+    trackables = [Statistic, Task, Food, Calendar, Journal, LifeTrack, HealthTrack, Inbox]
 
     # Grab the list of inx files from the inbox directory, plus the inbox file
     files = os.listdir(inbox_dir)
