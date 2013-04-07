@@ -77,17 +77,26 @@ class Statistic(Trackable):
 class Task(Trackable):
     """docstring for Task"""
     p = re.compile(r'!- (.*)')
+    multiline = True
 
-    def __init__(self, string):
+    def __init__(self, strings):
         super(Task, self).__init__()
-        self.taskstring = self.p.match(string).group(1)
+        self.taskstring = self.p.match(strings[0]).group(1)
+        self.notes = map(lambda s: s.strip(), strings[1:])
 
     def record(self):
-        os.system("otask '" + self.taskstring + "'")
+        if self.notes == []:
+            os.system("otask '" + self.taskstring + "'")
+        else:
+            os.system("otask '" + self.taskstring + " (" + '\n'.join(self.notes) + ")'")
 
     @classmethod
     def identify(cls, string):
         return cls.p.match(string)
+
+    @classmethod
+    def identify_end(cls, string):
+        return re.match(r"^$", string)  # Find the next empty line
 
 
 class Calendar(Trackable):
