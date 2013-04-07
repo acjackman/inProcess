@@ -74,6 +74,54 @@ class Statistic(Trackable):
         return cls.p.match(string)
 
 
+class LifeTrack(Trackable):
+    """docstring for Statistic"""
+    p = re.compile((
+        r"Life Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
+        r"(.*)")
+    )
+
+    def __init__(self, string):
+        super(Statistic, self).__init__()
+        m_obj = self.p.match(string)
+        self.time = m_obj.group(1)
+        self.Event = m_obj.group(2)
+
+    def record(self):
+        data_dir = self.settings['data_dir']
+        with open(data_dir + 'LifeTrack.csv', 'ab') as csvfile:
+            spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+            spamwriter.writerow([self.time, self.Event])
+
+    @classmethod
+    def identify(cls, string):
+        return cls.p.match(string)
+
+
+class HealthTrack(Trackable):
+    """docstring for Statistic"""
+    p = re.compile((
+        r"Health Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
+        r"(.*)")
+    )
+
+    def __init__(self, string):
+        super(Statistic, self).__init__()
+        m_obj = self.p.match(string)
+        self.time = m_obj.group(1)
+        self.Event = m_obj.group(2)
+
+    def record(self):
+        data_dir = self.settings['data_dir']
+        with open(data_dir + 'HealthTrack.csv', 'ab') as csvfile:
+            spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+            spamwriter.writerow([self.time, self.Event])
+
+    @classmethod
+    def identify(cls, string):
+        return cls.p.match(string)
+
+
 class Task(Trackable):
     """docstring for Task"""
     p = re.compile(r'!- (.*)')
@@ -119,7 +167,7 @@ def main():
     p = optparse.OptionParser()
     p.add_option('--person', '-p', default="world")
     options, arguments = p.parse_args()
-    trackables = [Inbox, Statistic, Task, Calendar]
+    trackables = [Statistic, Task, Calendar, LifeTrack, HealthTrack, Inbox]
 
     # Set Variables
     settings = json.loads(open('Test/settings.json', 'rb').read())
