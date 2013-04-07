@@ -241,10 +241,13 @@ def main():
     fp = re.compile(
         r"inx [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}")
     files = filter(lambda file: fp.match(file), files)
-    old_files = [inbox_file] + [inbox_dir + file for file in files]
+    old_files = [inbox_dir + file for file in files]
+    new_files = [storage_dir + file for file in files]
     now = datetime.now()
-    inbox_store = storage_dir + "inbox " + now.strftime('%Y-%m-%dT%H-%M-%S') + ".md"
-    new_files = [inbox_store] + [storage_dir + file for file in files]
+    if os.path.exists(inbox_file):
+        inbox_store = storage_dir + "inbox " + now.strftime('%Y-%m-%dT%H-%M-%S') + ".md"
+        old_files = [inbox_file] + old_files
+        new_files = [inbox_store] + new_files
 
     # Setup output
     inbox_header = "# Inbox\n`inbox.md` created " + now.strftime('%B %d, %Y %H:%M:%S') + "\n\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n"
@@ -272,7 +275,7 @@ def main():
         # Move the file that has been read to storage
         shutil.move(file, new_files[f_index])
     # Write inbox contents to file
-    if inbox_contents != '':
+    if re.sub('\n', '', inbox_contents) != '':
         f = open(inbox_file, 'wb')
         inbox_contents = inbox_header + inbox_contents
         inbox_contents = re.sub(r"\n\n\n+", r"\n\n", inbox_contents)
