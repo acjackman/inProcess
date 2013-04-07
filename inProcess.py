@@ -7,11 +7,15 @@ from datetime import datetime
 import shutil
 import json
 
+##############################################################################
+# Parseable Class Definitions
+##############################################################################
 
-class Trackable(object):
-    """docstring for Trackable"""
+
+class Parseable(object):
+    """docstring for Parseable"""
     def __init__(self):
-        super(Trackable, self).__init__()
+        super(Parseable, self).__init__()
     multiline = False
     settings = json.loads(open('Test/settings.json', 'rb').read())
 
@@ -27,7 +31,7 @@ class Trackable(object):
         pass
 
 
-class Inbox(Trackable):
+class Inbox(Parseable):
     """docstring for Inbox"""
     p = re.compile(r"# Inbox")
     multiline = True
@@ -48,7 +52,7 @@ class Inbox(Trackable):
         return re.match(r"([\*-] ){4,}", string)
 
 
-class Statistic(Trackable):
+class Statistic(Parseable):
     """docstring for Statistic"""
     p = re.compile((
         r"([A-z 0-9]+)\. "
@@ -74,7 +78,7 @@ class Statistic(Trackable):
         return cls.p.match(string)
 
 
-class LifeTrack(Trackable):
+class LifeTrack(Parseable):
     """docstring for Statistic"""
     p = re.compile((
         r"Life Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
@@ -98,7 +102,7 @@ class LifeTrack(Trackable):
         return cls.p.match(string)
 
 
-class HealthTrack(Trackable):
+class HealthTrack(Parseable):
     """docstring for Statistic"""
     p = re.compile((
         r"Health Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
@@ -122,7 +126,7 @@ class HealthTrack(Trackable):
         return cls.p.match(string)
 
 
-class Task(Trackable):
+class Task(Parseable):
     """docstring for Task"""
     p = re.compile(r'!- (.*)')
     multiline = True
@@ -147,7 +151,7 @@ class Task(Trackable):
         return re.match(r"^$", string)  # Find the next empty line
 
 
-class Calendar(Trackable):
+class Calendar(Parseable):
     """docstring for Calendar"""
     p = re.compile(r'!@ (.*)')
 
@@ -162,18 +166,34 @@ class Calendar(Trackable):
     def identify(cls, string):
         return cls.p.match(string)
 
+##############################################################################
+# Main Loop
+##############################################################################
+
 
 def main():
-    p = optparse.OptionParser()
-    p.add_option('--person', '-p', default="world")
-    options, arguments = p.parse_args()
-    trackables = [Statistic, Task, Calendar, LifeTrack, HealthTrack, Inbox]
-
     # Set Variables
     settings = json.loads(open('Test/settings.json', 'rb').read())
     inbox_dir = settings['inbox_dir']
     inbox_file = settings['inbox_file']
     storage_dir = settings['storage_dir']
+
+    # Redefine Parser
+    class MyParser(optparse.OptionParser):
+        def format_epilog(self, formatter):
+            return self.epilog
+
+    # Parse Command Line options
+    p = MyParser(epilog=(
+        '\nStorage Locations:\n'
+        'Inbox: %s\n'
+        'inx files: %s\n'
+        'inx storage: %s\n') % (inbox_file, inbox_dir, storage_dir)
+    )
+    options, arguments = p.parse_args()
+
+    # List parseable things
+    trackables = [Statistic, Task, Calendar, LifeTrack, HealthTrack, Inbox]
 
     # Grab the list of inx files from the inbox directory, plus the inbox file
     files = os.listdir(inbox_dir)
@@ -194,7 +214,6 @@ def main():
         f = open(file, 'rb')
         line = f.readline()
         while line != '':
-            # Test the single line trackables
             for track in trackables:
                 if track.identify(line):
                     if track.multiline:
@@ -206,7 +225,7 @@ def main():
                     else:
                         track(line).record()
                     break
-            else:  # Runs if no track matches
+            else:  # Runs if we don't know how to parse the current line
                 inbox_contents = inbox_contents + line
             line = f.readline()
         # Move the file that has been read to storage
