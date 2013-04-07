@@ -7,7 +7,25 @@ from datetime import datetime
 import shutil
 
 
-class Inbox(object):
+class Trackable(object):
+    """docstring for Trackable"""
+    def __init__(self):
+        super(Trackable, self).__init__()
+    lines = 1
+
+    def record(self):
+        pass
+
+    @classmethod
+    def identify(cls, string):
+        pass
+
+    @classmethod
+    def identify_end(cls, string):
+        pass
+
+
+class Inbox(Trackable):
     """docstring for Inbox"""
     p = re.compile(r"# Inbox")
 
@@ -29,15 +47,13 @@ class Inbox(object):
         return re.match(r"([\*-] ){4,}", string)
 
 
-class Statistic(object):
+class Statistic(Trackable):
     """docstring for Statistic"""
     p = re.compile((
         r"([A-z 0-9]+)\. "
         r"([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})"
         r"(.*)")
     )
-
-    lines = 1
 
     def __init__(self, string):
         super(Statistic, self).__init__()
@@ -56,11 +72,9 @@ class Statistic(object):
         return cls.p.match(string)
 
 
-class Task(object):
+class Task(Trackable):
     """docstring for Task"""
     p = re.compile(r'!- (.*)')
-
-    lines = 1
 
     def __init__(self, string):
         super(Task, self).__init__()
