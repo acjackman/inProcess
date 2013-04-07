@@ -88,11 +88,27 @@ class Task(Trackable):
         return cls.p.match(string)
 
 
+class Calendar(Trackable):
+    """docstring for Calendar"""
+    p = re.compile(r'!@ (.*)')
+
+    def __init__(self, string):
+        super(Calendar, self).__init__()
+        self.eventstring = self.p.match(string).group(1)
+
+    def record(self):
+        os.system("osascript -e 'tell application \"Fantastical\" to parse sentence \"" + self.eventstring + "\" with add immediately'")
+
+    @classmethod
+    def identify(cls, string):
+        return cls.p.match(string)
+
+
 def main():
     p = optparse.OptionParser()
     p.add_option('--person', '-p', default="world")
     options, arguments = p.parse_args()
-    trackables = [Inbox, Statistic, Task]
+    trackables = [Inbox, Statistic, Task, Calendar]
 
     # Set Variables
     inbox_dir = "/Users/Adam/Dropbox/Active/inProcess/Test/Inbox/"
