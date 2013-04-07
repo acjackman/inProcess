@@ -5,13 +5,14 @@ import os
 import csv
 from datetime import datetime
 import shutil
+import json
 
 
 class Trackable(object):
     """docstring for Trackable"""
     def __init__(self):
         super(Trackable, self).__init__()
-    lines = 1
+    multiline = False
 
     def record(self):
         pass
@@ -28,8 +29,7 @@ class Trackable(object):
 class Inbox(Trackable):
     """docstring for Inbox"""
     p = re.compile(r"# Inbox")
-
-    lines = 4
+    multiline = True
 
     def __init__(self, arg):
         super(Inbox, self).__init__()
@@ -63,7 +63,9 @@ class Statistic(Trackable):
         self.extras = m_obj.group(3).split('. ')
 
     def record(self):
-        with open('/Users/Adam/Dropbox/Active/inProcess/Test/Data/' + self.StatName.replace(' ', '')+'.csv', 'ab') as csvfile:
+        settings = json.loads(open('Test/settings.json', 'rb').read())
+        data_dir = settings['data_dir']
+        with open(data_dir + self.StatName.replace(' ', '')+'.csv', 'ab') as csvfile:
             spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow([self.time] + filter(None, self.extras))
 
@@ -111,9 +113,10 @@ def main():
     trackables = [Inbox, Statistic, Task, Calendar]
 
     # Set Variables
-    inbox_dir = "/Users/Adam/Dropbox/Active/inProcess/Test/Inbox/"
-    inbox_file = "/Users/Adam/Dropbox/Active/inProcess/Test/inbox.md"
-    storage_dir = "/Users/Adam/Dropbox/Active/inProcess/Test/LogStorage/"
+    settings = json.loads(open('Test/settings.json', 'rb').read())
+    inbox_dir = settings['inbox_dir']
+    inbox_file = settings['inbox_file']
+    storage_dir = settings['storage_dir']
 
     # Grab the list of inx files from the inbox directory, plus the inbox file
     files = os.listdir(inbox_dir)
@@ -137,7 +140,7 @@ def main():
             # Test the single line trackables
             for track in trackables:
                 if track.identify(line):
-                    if track.lines > 1:
+                    if track.multiline:
                         lines = []
                         while track.identify_end(line) is None:
                             lines = lines + [line]
