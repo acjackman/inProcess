@@ -53,6 +53,46 @@ class Inbox(Parseable):
         return re.match(r"([\*-] ){4,}", string)
 
 
+class Food(Parseable):
+    """docstring for Food"""
+    p = re.compile(r'Food ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})')
+    multiline = True
+
+    def __init__(self, strings):
+        super(Food, self).__init__()
+        strings = map(lambda s: s.strip(), strings)
+        self.time = self.p.match(strings[0]).group(1)
+        self.items = strings[1:]
+        loc_idx = [i for i, s in enumerate(strings) if re.match('@.*', s)]
+        if len(loc_idx) > 0:
+            loc_idx = loc_idx.pop()
+            self.location = re.match('@ (.*)', strings[loc_idx]).group(1)
+            self.items.remove(strings[loc_idx])
+        else:
+            self.location = None
+        from_idx = [i for i, s in enumerate(strings) if re.match('>.*', s)]
+        if len(from_idx) > 0:
+            from_idx = from_idx.pop()
+            self.frm = re.match('> (.*)', strings[from_idx]).group(1)
+            self.items.remove(strings[from_idx])
+        else:
+            self.frm = None
+
+    def record(self):
+        data_dir = self.settings['data_dir']
+        with open(data_dir + 'Food.csv', 'ab') as csvfile:
+            spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+            spamwriter.writerow([self.time, self.location, self.frm] + filter(None, self.items))
+
+    @classmethod
+    def identify(cls, string):
+        return cls.p.match(string)
+
+    @classmethod
+    def identify_end(cls, string):
+        return re.match(r"([\*-] ){5,}", string)
+
+
 class Statistic(Parseable):
     """docstring for Statistic"""
     p = re.compile((
@@ -194,7 +234,7 @@ def main():
     options, arguments = p.parse_args()
 
     # List parseable things
-    trackables = [Statistic, Task, Calendar, LifeTrack, HealthTrack, Inbox]
+    trackables = [Statistic, Task, Food, Calendar, LifeTrack, HealthTrack, Inbox]
 
     # Grab the list of inx files from the inbox directory, plus the inbox file
     files = os.listdir(inbox_dir)
