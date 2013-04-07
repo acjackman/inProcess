@@ -10,13 +10,12 @@ Add Fantastical AppleScript calendar Parser: @done
 - Statistic class should recognize quoted strings in the third+ column and make them one continuous string
 Write Documentation:
 	- Write README
-	- Write Help command
-Make Stack Process Function:
+	- Write Help command @done(2013-04-07)
+Make Stack Process Function: @done(2013-04-07)
 	or run it at the end of a line?
 	Make sure it gets run on the last line, because it might not
-	- research modifying enviornment variables in function
+
+- research modifying enviornment variables in function
 Add Food Log to Processing: @done
 	- check multiple line processing from task @done(2013-01-04)
 	- write regex @done(2013-01-04)
-	
-could possibly rewrite parser to pull lines as it neads it, but this works

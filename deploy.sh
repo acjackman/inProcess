@@ -1,1 +1,1 @@
-cp inProcess.rb ~/Dropbox/Library/bin/inProcess
+cp inProcess.py ~/Dropbox/Library/bin/inProcess
