@@ -53,6 +53,22 @@ class Inbox(Parseable):
         return re.match(r"([\*-] ){4,}", string)
 
 
+class CMD(Parseable):
+    """docstring for Command Lines"""
+    p = re.compile(r"CMD.*")
+
+    def __init__(self, arg):
+        super(Inbox, self).__init__()
+        self.arg = arg
+
+    def record(self):
+        pass
+
+    @classmethod
+    def identify(cls, string):
+        return cls.p.match(string)
+
+
 class Food(Parseable):
     """docstring for Food"""
     p = re.compile(r'Food ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})')
