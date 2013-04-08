@@ -93,7 +93,7 @@ class Food(Parseable):
             self.frm = re.match('> (.*)', strings[from_idx]).group(1)
             self.items.remove(strings[from_idx])
         else:
-            self.frm = None
+            self.frm = self.location
 
     def record(self):
         data_dir = self.settings['data_dir']
