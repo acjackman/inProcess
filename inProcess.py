@@ -19,7 +19,7 @@ class Parseable(object):
     def __init__(self):
         super(Parseable, self).__init__()
     multiline = False
-    settings = json.loads(open(expanduser('Test/.inprocess.json'), 'rb').read())
+    settings = json.loads(open(expanduser('~/.inprocess.json'), 'rb').read())
 
     def record(self):
         pass
@@ -164,14 +164,14 @@ class Statistic(Parseable):
 
 
 class LifeTrack(Parseable):
-    """docstring for Statistic"""
+    """docstring for LifeTrack"""
     p = re.compile((
         r"Life Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
-        r"(.*)")
+        r"\s*(.*)")
     )
 
     def __init__(self, string):
-        super(Statistic, self).__init__()
+        super(LifeTrack, self).__init__()
         m_obj = self.p.match(string)
         self.time = m_obj.group(1)
         self.Event = m_obj.group(2)
@@ -189,14 +189,14 @@ class LifeTrack(Parseable):
 
 
 class HealthTrack(Parseable):
-    """docstring for Statistic"""
+    """docstring for HealthTrack"""
     p = re.compile((
         r"Health Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
-        r"(.*)")
+        r"\s*(.*)")
     )
 
     def __init__(self, string):
-        super(Statistic, self).__init__()
+        super(HealthTrack, self).__init__()
         m_obj = self.p.match(string)
         self.time = m_obj.group(1)
         self.Event = m_obj.group(2)
@@ -270,7 +270,7 @@ class Calendar(Parseable):
 
 def main():
     # Set Variables
-    settings = json.loads(open(expanduser('Test/.inprocess.json'), 'rb').read())
+    settings = json.loads(open(expanduser('~/.inprocess.json'), 'rb').read())
     inbox_dir = settings['inbox_dir']
     inbox_file = settings['inbox_file']
     storage_dir = settings['storage_dir']
