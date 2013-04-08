@@ -99,11 +99,16 @@ class Food(Parseable):
 
         def breakFLine(string):
             x = string.split('---')
-            f_mch = re.match('([*-+]\s*)?((\d+)\s*(.*)\s+)?(.+)', x[0])
+            f_mch = re.match((r"([*-+]\s*)?"
+                              r'(([\d/]+)\s*(oz|cup|cups|pack|packs|slice|slices|piece|pieces|plate|plates|bowl|bowls)?\s+)?'
+                              r"(.+)"), x[0])
             if len(x) == 1:
-                return (f_mch.group(3), f_mch.group(4), f_mch.group(5).strip(' \t'), None)
+                return (f_mch.group(3), f_mch.group(4),
+                        f_mch.group(5).strip(' \t'), None)
             else:
-                return (f_mch.group(3), f_mch.group(4), f_mch.group(5).strip(' \t'), ''.join(x[1:]).strip(' \t'))
+                return (f_mch.group(3), f_mch.group(4),
+                        f_mch.group(5).strip(' \t'),
+                        ''.join(x[1:]).strip(' \t'))
 
         self.items = map(breakFLine, self.items)
 
