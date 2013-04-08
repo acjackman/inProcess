@@ -36,8 +36,10 @@ There must be a newline after the last note to indicate the end of Task notes an
 ### Food Log
 
     Food 2013-04-07T19:53:44
-    Entries
-    Entries
+    Orange
+    2 slices pizza
+    2 cookies
+    2 cookies --- Grandma's best recipe yet
     @ Location ate at
     > Location from
     * * * * * *

@@ -81,12 +81,14 @@ class Food(Parseable):
         self.time = self.p.match(strings[0]).group(1)
         self.items = strings[1:]
         loc_idx = [i for i, s in enumerate(strings) if re.match('@.*', s)]
+
         if len(loc_idx) > 0:
             loc_idx = loc_idx.pop()
             self.location = re.match('@ (.*)', strings[loc_idx]).group(1)
             self.items.remove(strings[loc_idx])
         else:
             self.location = None
+
         from_idx = [i for i, s in enumerate(strings) if re.match('>.*', s)]
         if len(from_idx) > 0:
             from_idx = from_idx.pop()
@@ -95,11 +97,22 @@ class Food(Parseable):
         else:
             self.frm = self.location
 
+        def breakFLine(string):
+            x = string.split('---')
+            f_mch = re.match('([*-+]\s*)?((\d+)\s*(.*)\s+)?(.+)', x[0])
+            if len(x) == 1:
+                return (f_mch.group(3), f_mch.group(4), f_mch.group(5).strip(' \t'), None)
+            else:
+                return (f_mch.group(3), f_mch.group(4), f_mch.group(5).strip(' \t'), ''.join(x[1:]).strip(' \t'))
+
+        self.items = map(breakFLine, self.items)
+
     def record(self):
         data_dir = self.settings['data_dir']
         with open(data_dir + 'Food.csv', 'ab') as csvfile:
             spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow([self.time, self.location, self.frm] + filter(None, self.items))
+            for item in self.items:
+                spamwriter.writerow([self.time, self.location, self.frm] + list(item))
         return True
 
     @classmethod
