@@ -215,12 +215,16 @@ class HealthTrack(Parseable):
 
 class Task(Parseable):
     """docstring for Task"""
-    p = re.compile(r'!- (.*)')
+    p = re.compile(r'!- (.*) (!)?')
     multiline = True
 
     def __init__(self, strings):
         super(Task, self).__init__()
         self.taskstring = self.p.match(strings[0]).group(1)
+        if self.p.match(strings[0]).group(2):
+            self.flagged = True
+        else:
+            self.flagged = False
         self.notes = map(lambda s: s.strip(), strings[1:])
 
     def record(self):
@@ -228,6 +232,8 @@ class Task(Parseable):
             cmd_string = self.taskstring
         else:
             cmd_string = self.taskstring + " (" + '\n'.join(self.notes) + ")"
+        if self.flagged:
+            cmd_string = cmd_string + ' !'
         cmd = Popen(['otask', cmd_string], stdout=PIPE, stdin=PIPE, stderr=STDOUT, shell=False)
         results = cmd.communicate()
         return results[0].startswith('Task added')
