@@ -14,6 +14,7 @@ TestData:
 	@rm Test/inbox/inx*
 	@touch Test/Data/f
 	@rm Test/Data/*
+	@# File: inx 2013-04-06T14-37-18.md
 	@echo 'Test. 2013-04-06T14:37:18' > 'Test/Inbox/inx 2013-04-06T14-37-18.md'
 	@echo '' >> 'Test/Inbox/inx 2013-04-06T14-37-18.md'
 	@echo 'Sleep. 2013-04-06T14:37:18. 2013-04-06T14:37:18' >> 'Test/Inbox/inx 2013-04-06T14-37-18.md'
@@ -50,6 +51,7 @@ TestData:
 	@echo '!- Test Multiple Lines Priority !' >> 'Test/Inbox/inx 2013-04-06T14-37-18.md'
 	@echo '* Note 1' >> 'Test/Inbox/inx 2013-04-06T14-37-18.md'
 	@echo '' >> 'Test/Inbox/inx 2013-04-06T14-37-18.md'
+	@# File: inx 2013-04-08T00-00-00.md
 	@echo 'Test. 2013-04-06T22:19:30' > 'Test/Inbox/inx 2013-04-08T00-00-00.md'
 	@echo '' >> 'Test/Inbox/inx 2013-04-08T00-00-00.md'
 	@echo 'Life Track: 2013-04-07T20:23:43 --- With Space' >> 'Test/Inbox/inx 2013-04-08T00-00-00.md'
@@ -60,13 +62,17 @@ TestData:
 	@echo '' >> 'Test/Inbox/inx 2013-04-08T00-00-00.md'
 	@echo 'Health Track: 2013-04-07T20:23:43 ---Without Space' >> 'Test/Inbox/inx 2013-04-08T00-00-00.md'
 	@echo '' >> 'Test/Inbox/inx 2013-04-08T00-00-00.md'
+	@echo 'CMD inProcess' >> 'Test/Inbox/inx 2013-04-08T00-00-00.md'
+	@echo '' >> 'Test/Inbox/inx 2013-04-08T00-00-00.md'
 	@echo 'Sleep. 2013-04-06T22:16:58. 2013-04-07T22:16:58' >> 'Test/Inbox/inx 2013-04-08T00-00-00.md'
 	@echo '' >> 'Test/Inbox/inx 2013-04-08T00-00-00.md'
 	@echo 'Newline. 2013-04-06T14:37:18. 2013-04-06T14:37:18' >> 'Test/Inbox/inx 2013-04-08T00-00-00.md'
+	@# Inbox
 	@echo '# Inbox' > 'Test/inbox.md'
 	@echo '`inbox.md` created April 06, 2013 20:36' >> 'Test/inbox.md'
 	@echo '' >> 'Test/inbox.md'
 	@echo '* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *' >> 'Test/inbox.md'
 	@echo '' >> 'Test/inbox.md'
+	@# .inporocess.json
 	@echo '{"inbox_dir": "/Users/Adam/Dropbox/Active/inProcess/Test/Inbox/","inbox_file": "/Users/Adam/Dropbox/Active/inProcess/Test/inbox.md","data_dir": "/Users/Adam/Dropbox/Active/inProcess/Test/Data/","storage_dir": "/Users/Adam/Dropbox/Active/inProcess/Test/LogStorage/"}'> 'Test/.inprocess.json'
 

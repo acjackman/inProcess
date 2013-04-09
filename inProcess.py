@@ -56,10 +56,10 @@ class Inbox(Parseable):
 
 class CMD(Parseable):
     """docstring for Command Lines"""
-    p = re.compile(r"CMD.*")
+    p = re.compile(r"\s*CMD.+")
 
     def __init__(self, arg):
-        super(Inbox, self).__init__()
+        super(CMD, self).__init__()
         self.arg = arg
 
     def record(self):
@@ -308,7 +308,7 @@ def main():
     options, arguments = p.parse_args()
 
     # List parseable things
-    trackables = [Statistic, Task, Food, Calendar, Journal, LifeTrack, HealthTrack, Inbox]
+    trackables = [Statistic, Task, Food, Calendar, Journal, LifeTrack, HealthTrack, CMD, Inbox]
 
     # Grab the list of inx files from the inbox directory, plus the inbox file
     files = os.listdir(inbox_dir)
