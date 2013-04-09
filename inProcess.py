@@ -252,7 +252,8 @@ class Task(Parseable):
             cmd_string = self.taskstring + " (" + '\n'.join(self.notes) + ")"
         if self.flagged:
             cmd_string = cmd_string + ' !'
-        cmd = Popen(['otask', cmd_string], stdout=PIPE, stdin=PIPE, stderr=STDOUT, shell=False)
+        cmd = Popen(['otask', cmd_string], stdout=PIPE, stdin=PIPE,
+                    stderr=STDOUT, shell=False)
         results = cmd.communicate()
         return results[0].startswith('Task added')
 
@@ -274,7 +275,9 @@ class Calendar(Parseable):
         self.eventstring = self.p.match(string).group(1)
 
     def record(self):
-        os.system("osascript -e 'tell application \"Fantastical\" to parse sentence \"" + self.eventstring + "\" with add immediately'")
+        os.system("osascript -e 'tell application \"Fantastical\""
+                  " to parse sentence \"" + self.eventstring +
+                  "\" add with immediately'")
         return True
 
     @classmethod
@@ -308,7 +311,8 @@ def main():
     options, arguments = p.parse_args()
 
     # List parseable things
-    trackables = [Statistic, Task, Food, Calendar, Journal, LifeTrack, HealthTrack, CMD, Inbox]
+    parseables = [Statistic, Task, Food, Calendar, Journal,
+                  LifeTrack, HealthTrack, CMD, Inbox]
 
     # Grab the list of inx files from the inbox directory, plus the inbox file
     files = os.listdir(inbox_dir)
@@ -324,7 +328,10 @@ def main():
         new_files = [inbox_store] + new_files
 
     # Setup output
-    inbox_header = "# Inbox\n`inbox.md` created " + now.strftime('%B %d, %Y %H:%M:%S') + "\n\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n"
+    inbox_header = ("# Inbox\n`inbox.md` created " +
+                    now.strftime('%B %d, %Y %H:%M:%S') +
+                    "\n\n* * * * * * * * * * * * * * * * *"
+                    " * * * * * * * * * * * * *\n")
     inbox_contents = ''
 
     # Loop through the list of files
@@ -332,17 +339,17 @@ def main():
         f = open(file, 'rb')
         line = f.readline()
         while line != '':
-            for track in trackables:
-                if track.identify(line):
-                    if track.multiline:
+            for ident in parseables:
+                if ident.identify(line):
+                    if ident.multiline:
                         lines = []
-                        while track.identify_end(line) is None:
+                        while ident.identify_end(line) is None:
                             lines = lines + [line]
                             line = f.readline()
-                        if not track(lines).record():
+                        if not ident(lines).record():
                             inbox_contents = inbox_contents + ''.join(lines)
                     else:
-                        if not track(line).record():
+                        if not ident(line).record():
                             inbox_contents = inbox_contents + line
                     break
             else:  # Runs if we don't know how to parse the current line
