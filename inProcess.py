@@ -84,7 +84,7 @@ class Food(Parseable):
 
         if len(loc_idx) > 0:
             loc_idx = loc_idx.pop()
-            self.location = re.match('@ (.*)', strings[loc_idx]).group(1)
+            self.location = re.match('@\s*(.*)', strings[loc_idx]).group(1)
             self.items.remove(strings[loc_idx])
         else:
             self.location = None
@@ -92,7 +92,7 @@ class Food(Parseable):
         from_idx = [i for i, s in enumerate(strings) if re.match('>.*', s)]
         if len(from_idx) > 0:
             from_idx = from_idx.pop()
-            self.frm = re.match('> (.*)', strings[from_idx]).group(1)
+            self.frm = re.match('>\s*(.*)', strings[from_idx]).group(1)
             self.items.remove(strings[from_idx])
         else:
             self.frm = self.location

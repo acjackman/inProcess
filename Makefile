@@ -51,6 +51,12 @@ TestData:
 	@echo '!- Test Multiple Lines Priority !' >> 'Test/Inbox/inx 2013-04-06T14-37-18.md'
 	@echo '* Note 1' >> 'Test/Inbox/inx 2013-04-06T14-37-18.md'
 	@echo '' >> 'Test/Inbox/inx 2013-04-06T14-37-18.md'
+	@# File: inx 2013-04-11T23-19-00.md # Test food file with no space between @ and placename
+	@echo 'Food 2013-04-11T23:19:25' >> 'Test/Inbox/inx 2013-04-11T23-19-00.md'
+	@echo 'pizza --- comment' >> 'Test/Inbox/inx 2013-04-11T23-19-00.md'
+	@echo '@work' >> 'Test/Inbox/inx 2013-04-11T23-19-00.md'
+	@echo '>home' >> 'Test/Inbox/inx 2013-04-11T23-19-00.md'
+	@echo '* * * * * *' >> 'Test/Inbox/inx 2013-04-11T23-19-00.md'
 	@# File: inx 2013-04-08T00-00-00.md
 	@echo 'Test. 2013-04-06T22:19:30' > 'Test/Inbox/inx 2013-04-08T00-00-00.md'
 	@echo '' >> 'Test/Inbox/inx 2013-04-08T00-00-00.md'
