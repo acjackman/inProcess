@@ -132,7 +132,7 @@ class Food(Parseable):
 
     @classmethod
     def identify_end(cls, string):
-        return re.match(r"([\*-] ){5,}", string)
+        return re.match(r"\s*[\*-]( [\*-]){4,}\s*", string)
 
 
 class Journal(Parseable):

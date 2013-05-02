@@ -1,6 +1,20 @@
 import inProcess as ip
 
 
+def general_identify_end(cls):
+    # Either 5 `*` or 5 `-` mark the end
+    assert cls.identify_end('* * * * *')
+    assert cls.identify_end('- - - - -')
+
+    # Can have leading or trailing whitespace
+    assert cls.identify_end(' - - - - -')   # Leading
+    assert cls.identify_end('  - - - - -')   # Leading
+    assert cls.identify_end('- - - - - ')   # Trailing
+    assert cls.identify_end('- - - - -  ')   # Trailing
+    assert cls.identify_end(' - - - - - ')  # Both
+    assert cls.identify_end('  - - - - -  ')  # Both
+
+
 def test_inbox_indetify():
     # Check match only one `#`
     assert ip.Inbox.identify('# Inbox')
@@ -12,14 +26,7 @@ def test_inbox_indetify():
 
 
 def test_inbox_identify_end():
-    # Either 5 `*` or 5 `-` mark the end
-    assert ip.Inbox.identify_end('* * * * *')
-    assert ip.Inbox.identify_end('- - - - -')
-
-    # Can have leading or trailing whitespace
-    assert ip.Inbox.identify_end(' - - - - -')   # Leading
-    assert ip.Inbox.identify_end('- - - - - ')   # Trailing
-    assert ip.Inbox.identify_end(' - - - - - ')  # Both
+    general_identify_end(ip.Inbox)
 
 
 def test_inbox_multiline():
@@ -78,3 +85,7 @@ def test_Food_identify():
     assert ip.Food.identify(' Food 2013-05-02T09:30:11')
     assert ip.Food.identify('Food 2013-05-02T09:30:11 ')
     assert ip.Food.identify(' Food 2013-05-02T09:30:11 ')
+
+
+def test_Food_identify_end():
+    general_identify_end(ip.Food)
