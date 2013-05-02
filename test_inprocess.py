@@ -44,26 +44,27 @@ def test_CMD_match():
 def test_CMD_singleline():
     assert not ip.CMD.multiline
 
-    def test_Food_breakFline():
-        # Test Divisors except units
-        assert ip.Food.breakFLine('oranges') == (None, None, 'oranges', None)
-        assert ip.Food.breakFLine('  oranges') == (None, None, 'oranges', None)
-        assert ip.Food.breakFLine('2 oranges') == ('2', None, 'oranges', None)
-        assert ip.Food.breakFLine('2 oranges') == ('2', None, 'oranges', None)
-        assert ip.Food.breakFLine('*2 oranges') == ('2', None, 'oranges', None)
-        assert ip.Food.breakFLine(' *2 oranges ') == ('2', None, 'oranges', None)
-        assert ip.Food.breakFLine('* 2 oranges') == ('2', None, 'oranges', None)
-        assert ip.Food.breakFLine('* 2 oranges --- comment') == ('2', None, 'oranges', 'comment')
-        assert ip.Food.breakFLine('* 2 oranges --- comment ') == ('2', None, 'oranges', 'comment')
-        assert ip.Food.breakFLine('* 2 oranges--- comment') == ('2', None, 'oranges', 'comment')
-        assert ip.Food.breakFLine('* 2 oranges ---comment') == ('2', None, 'oranges', 'comment')
-        assert ip.Food.breakFLine('* 2 oranges---comment') == ('2', None, 'oranges', 'comment')
-        assert ip.Food.breakFLine('pizza --- comment') == (None, None, 'pizza', 'comment')
-        assert ip.Food.breakFLine('2 slices pizza') == ('2', 'slices', 'pizza', None)
-        assert ip.Food.breakFLine('2 slices pizza --- comment') == ('2', 'slices', 'pizza', 'comment')
 
-        # Test all divisors
-        quanties = ['oz', 'cup', 'cups', 'pack', 'packs', 'slice', 'slices',
-                    'piece', 'pieces', 'plate', 'plates', 'bowl', 'bowls']
-        for q in quanties:
-            assert ip.Food.breakFLine('2' + q + ' food') == ('2', q, 'food', None)
+def test_Food_breakFline():
+    # Test Divisors except units
+    assert ip.Food.breakFLine('oranges') == (None, None, 'oranges', None)
+    assert ip.Food.breakFLine('  oranges') == (None, None, 'oranges', None)
+    assert ip.Food.breakFLine('2 oranges') == ('2', None, 'oranges', None)
+    assert ip.Food.breakFLine('2 oranges') == ('2', None, 'oranges', None)
+    assert ip.Food.breakFLine('*2 oranges') == ('2', None, 'oranges', None)
+    assert ip.Food.breakFLine(' *2 oranges ') == ('2', None, 'oranges', None)
+    assert ip.Food.breakFLine('* 2 oranges') == ('2', None, 'oranges', None)
+    assert ip.Food.breakFLine('* 2 oranges --- comment') == ('2', None, 'oranges', 'comment')
+    assert ip.Food.breakFLine('* 2 oranges --- comment ') == ('2', None, 'oranges', 'comment')
+    assert ip.Food.breakFLine('* 2 oranges--- comment') == ('2', None, 'oranges', 'comment')
+    assert ip.Food.breakFLine('* 2 oranges ---comment') == ('2', None, 'oranges', 'comment')
+    assert ip.Food.breakFLine('* 2 oranges---comment') == ('2', None, 'oranges', 'comment')
+    assert ip.Food.breakFLine('pizza --- comment') == (None, None, 'pizza', 'comment')
+    assert ip.Food.breakFLine('2 slices pizza') == ('2', 'slices', 'pizza', None)
+    assert ip.Food.breakFLine('2 slices pizza --- comment') == ('2', 'slices', 'pizza', 'comment')
+
+    # Test all divisors
+    quanties = ['oz', 'cup', 'cups', 'pack', 'packs', 'slice', 'slices',
+                'piece', 'pieces', 'plate', 'plates', 'bowl', 'bowls']
+    for q in quanties:
+        assert ip.Food.breakFLine('2' + q + ' food') == ('2', q, 'food', None)
