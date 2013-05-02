@@ -32,6 +32,10 @@ class Parseable(object):
     def identify_end(cls, string):
         pass
 
+    @classmethod
+    def identify_md_hr(cls, string):
+        return re.match(r"\s*[\*-]( [\*-]){4,}\s*", string)
+
 
 class Inbox(Parseable):
     """docstring for Inbox"""
@@ -51,7 +55,7 @@ class Inbox(Parseable):
 
     @classmethod
     def identify_end(cls, string):
-        return re.match(r"\s*[\*-]( [\*-]){4,}\s*", string)
+        return cls.identify_md_hr(string)
 
 
 class CMD(Parseable):
@@ -136,7 +140,7 @@ class Food(Parseable):
 
     @classmethod
     def identify_end(cls, string):
-        return re.match(r"\s*[\*-]( [\*-]){4,}\s*", string)
+        return cls.identify_md_hr(string)
 
 
 class Journal(Parseable):
@@ -161,7 +165,7 @@ class Journal(Parseable):
 
     @classmethod
     def identify_end(cls, string):
-        return re.match(r"\s*[\*-]( [\*-]){4,}\s*", string)
+        return cls.identify_md_hr(string)
 
 
 class Statistic(Parseable):

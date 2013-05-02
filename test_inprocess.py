@@ -95,6 +95,9 @@ class TestFood:
     def test_Food_identify_end(self):
         general_identify_end(ip.Food)
 
+    def test_Journal_multline(self):
+        assert ip.Food.multiline
+
     def test_Food_init(self):
         # Test Standard order
         fd_str = ['Food 2013-05-02T11:09:01', '1 banana', '1 bowl cereal',
