@@ -51,12 +51,12 @@ class Inbox(Parseable):
 
     @classmethod
     def identify_end(cls, string):
-        return re.match(r"([\*-] ){4,}", string)
+        return re.match(r"\s*[\*-]( [\*-]){4,}\s*", string)
 
 
 class CMD(Parseable):
     """docstring for Command Lines"""
-    p = re.compile(r"\s*CMD.+")
+    p = re.compile(r"\s*CMD\s+\w+")
 
     def __init__(self, arg):
         super(CMD, self).__init__()
