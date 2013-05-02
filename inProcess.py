@@ -19,7 +19,7 @@ class Parseable(object):
     def __init__(self):
         super(Parseable, self).__init__()
     multiline = False
-    settings = json.loads(open(expanduser('~/.inprocess.json'), 'rb').read())
+    settings = json.loads(open(expanduser('./Test/settings.json'), 'rb').read())
 
     def record(self):
         pass
@@ -75,6 +75,25 @@ class Food(Parseable):
     p = re.compile(r'Food ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})')
     multiline = True
 
+    @classmethod
+    def breakFLine(cls, string):
+        x = string.split('---')
+        quanties = ['oz', 'cup', 'cups', 'pack', 'packs', 'slice', 'slices',
+                    'piece', 'pieces', 'plate', 'plates', 'bowl', 'bowls']
+        q_string = r'|'.join(quanties)
+        f_mch = re.match((r"([*-+]\s*)?(([\d/]+)\s*("
+                          + q_string +
+                          r")?\s+)?(.+)"), x[0])
+        # Return tuple is ()
+        # Check for comments
+        if len(x) == 1:
+            return (f_mch.group(3), f_mch.group(4),
+                    f_mch.group(5).strip(' \t'), None)
+        else:
+            return (f_mch.group(3), f_mch.group(4),
+                    f_mch.group(5).strip(' \t'),
+                    ''.join(x[1:]).strip(' \t'))
+
     def __init__(self, strings):
         super(Food, self).__init__()
         strings = map(lambda s: s.strip(), strings)
@@ -97,20 +116,7 @@ class Food(Parseable):
         else:
             self.frm = self.location
 
-        def breakFLine(string):
-            x = string.split('---')
-            f_mch = re.match((r"([*-+]\s*)?"
-                              r'(([\d/]+)\s*(oz|cup|cups|pack|packs|slice|slices|piece|pieces|plate|plates|bowl|bowls)?\s+)?'
-                              r"(.+)"), x[0])
-            if len(x) == 1:
-                return (f_mch.group(3), f_mch.group(4),
-                        f_mch.group(5).strip(' \t'), None)
-            else:
-                return (f_mch.group(3), f_mch.group(4),
-                        f_mch.group(5).strip(' \t'),
-                        ''.join(x[1:]).strip(' \t'))
-
-        self.items = map(breakFLine, self.items)
+        self.items = map(self.breakFLine, self.items)
 
     def record(self):
         data_dir = self.settings['data_dir']
