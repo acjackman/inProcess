@@ -141,7 +141,7 @@ class Food(Parseable):
 
 class Journal(Parseable):
     """docstring for Journal"""
-    p = re.compile(r'Journal ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})')
+    p = re.compile(r'\s*Journal ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})')
     multiline = True
 
     def __init__(self, strings):
@@ -161,7 +161,7 @@ class Journal(Parseable):
 
     @classmethod
     def identify_end(cls, string):
-        return re.match(r"([\*-] ){5,}", string)
+        return re.match(r"\s*[\*-]( [\*-]){4,}\s*", string)
 
 
 class Statistic(Parseable):

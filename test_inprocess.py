@@ -150,3 +150,16 @@ class TestFood:
         # Space between delimiter
         check_location_and_frm('', 'Panda ', 'Panda')  # Missing
         check_location_and_frm('', '  Panda ', 'Panda')  # Extra
+
+
+class TestJournal:
+    def test_Journal_identify(self):
+        assert ip.Journal.identify('Journal 2013-05-02T13:17:46')
+        assert ip.Journal.identify('Journal 2013-05-02T13:17:46 ')
+        assert ip.Journal.identify(' Journal 2013-05-02T13:17:46')
+        assert ip.Journal.identify(' Journal 2013-05-02T13:17:46 ')
+        assert not ip.Journal.identify('Jornal 2013-05-02T13:17:46')
+
+    def test_Journal_identify_end(self):
+        general_identify_end(ip.Journal)
+    
