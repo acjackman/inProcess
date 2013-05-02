@@ -72,7 +72,7 @@ class CMD(Parseable):
 
 class Food(Parseable):
     """docstring for Food"""
-    p = re.compile(r'Food ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})')
+    p = re.compile(r'\s*Food ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})')
     multiline = True
 
     @classmethod

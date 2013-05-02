@@ -71,3 +71,10 @@ def test_Food_breakFline():
                 'piece', 'pieces', 'plate', 'plates', 'bowl', 'bowls']
     for q in quanties:
         assert ip.Food.breakFLine('2' + q + ' food') == ('2', q, 'food', None)
+
+
+def test_Food_identify():
+    assert ip.Food.identify('Food 2013-05-02T09:30:11')
+    assert ip.Food.identify(' Food 2013-05-02T09:30:11')
+    assert ip.Food.identify('Food 2013-05-02T09:30:11 ')
+    assert ip.Food.identify(' Food 2013-05-02T09:30:11 ')
