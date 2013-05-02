@@ -157,7 +157,7 @@ class Journal(Parseable):
 class Statistic(Parseable):
     """docstring for Statistic"""
     p = re.compile((
-        r"([A-z 0-9]+)\. "
+        r"\s*([A-z 0-9]+)\. "
         r"([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})"
         r"(.*)")
     )
@@ -184,7 +184,7 @@ class Statistic(Parseable):
 class LifeTrack(Parseable):
     """docstring for LifeTrack"""
     p = re.compile((
-        r"Life Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
+        r"\s*Life Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
         r"\s*(.*)")
     )
 
@@ -209,7 +209,7 @@ class LifeTrack(Parseable):
 class HealthTrack(Parseable):
     """docstring for HealthTrack"""
     p = re.compile((
-        r"Health Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
+        r"\s*Health Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
         r"\s*(.*)")
     )
 
@@ -364,7 +364,7 @@ def main():
     if re.sub('\n', '', inbox_contents) != '':
         f = open(inbox_file, 'wb')
         inbox_contents = inbox_header + inbox_contents
-        inbox_contents = re.sub(r"\n\n\n+", r"\n\n", inbox_contents)
+        inbox_contents = re.sub(r"\s*\n\s*\n\s*\n+", r"\n\n", inbox_contents)
         f.write(inbox_contents)
 
 if __name__ == '__main__':
