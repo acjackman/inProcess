@@ -169,3 +169,11 @@ class TestJournal:
 
     def test_Journal_multline(self):
         assert ip.Journal.multiline
+
+    def test_Journal_initialize(self):
+        lines = ['P1 About four years. I got tired of hearing how young I looked.'
+                 '',
+                 'P2 About four years. I got tired of hearing how young I looked.']
+        jrnl = ip.Journal(['Journal 2013-05-02T13:33:04'] + lines)
+        assert jrnl.time == '2013-05-02T13:33:04'
+        assert jrnl.lines == lines
