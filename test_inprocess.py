@@ -155,6 +155,7 @@ class TestFood:
 class TestJournal:
     def test_Journal_identify(self):
         assert ip.Journal.identify('Journal 2013-05-02T13:17:46')
+        assert ip.Journal.identify('Journal  2013-05-02T13:17:46')
         assert ip.Journal.identify('Journal 2013-05-02T13:17:46 ')
         assert ip.Journal.identify(' Journal 2013-05-02T13:17:46')
         assert ip.Journal.identify(' Journal 2013-05-02T13:17:46 ')
@@ -162,4 +163,6 @@ class TestJournal:
 
     def test_Journal_identify_end(self):
         general_identify_end(ip.Journal)
-    
+
+    def test_Journal_multline(self):
+        assert ip.Journal.multiline
