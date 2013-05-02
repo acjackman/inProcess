@@ -355,7 +355,10 @@ def main():
             else:  # Runs if we don't know how to parse the current line
                 inbox_contents = inbox_contents + line
             line = f.readline()
-        # Move the file that has been read to storage
+        # After File has been processed:
+        # Add blank line to remaining contents
+        inbox_contents = inbox_contents + '\n\n'
+        # Move the file to storage
         shutil.move(file, new_files[f_index])
     # Write inbox contents to file
     if re.sub('\n', '', inbox_contents) != '':
