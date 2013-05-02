@@ -366,7 +366,6 @@ def main():
         inbox_contents = inbox_header + inbox_contents
         inbox_contents = re.sub(r"\s*\n\s*\n\s*\n+", r"\n\n", inbox_contents)
         f.write(inbox_contents)
-        Task(['!- Process Inbox #adminpersonal @Tech d(today) (nv://find/inbox) !']).record()
 
 if __name__ == '__main__':
     main()
