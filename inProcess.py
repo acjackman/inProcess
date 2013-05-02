@@ -98,9 +98,11 @@ class Food(Parseable):
         super(Food, self).__init__()
         strings = map(lambda s: s.strip(), strings)
         self.time = self.p.match(strings[0]).group(1)
+        # Set items as strings so that you don't modify the originals, in case they need to be checked later
         self.items = strings[1:]
-        loc_idx = [i for i, s in enumerate(strings) if re.match('@.*', s)]
 
+        # Identify and set location
+        loc_idx = [i for i, s in enumerate(strings) if re.match('@.*', s)]
         if len(loc_idx) > 0:
             loc_idx = loc_idx.pop()
             self.location = re.match('@\s*(.*)', strings[loc_idx]).group(1)
@@ -113,6 +115,8 @@ class Food(Parseable):
             from_idx = from_idx.pop()
             self.frm = re.match('>\s*(.*)', strings[from_idx]).group(1)
             self.items.remove(strings[from_idx])
+            if self.location is None:
+                self.location = self.frm
         else:
             self.frm = self.location
 

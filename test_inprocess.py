@@ -89,3 +89,60 @@ def test_Food_identify():
 
 def test_Food_identify_end():
     general_identify_end(ip.Food)
+
+
+def test_Food_init():
+    # Test Standard order
+    fd_str = ['Food 2013-05-02T11:09:01', '1 banana', '1 bowl cereal',
+              '@ work_2', '> Home_3']
+    fd_item = ip.Food(fd_str)
+    assert fd_item.location == 'work_2'
+    assert fd_item.frm == 'Home_3'
+    assert fd_item.items == [('1', None, 'banana', None),
+                             ('1', 'bowl', 'cereal', None)]
+
+    # Test location at the beginning
+    fd_str = ['Food 2013-05-02T11:09:01', '@ work', '> Home', '1 banana']
+    fd_item = ip.Food(fd_str)
+    assert fd_item.location == 'work'
+    assert fd_item.frm == 'Home'
+
+    # Both Missing
+    fd_str = ['Food 2013-05-02T11:09:01', '1 banana']
+    fd_item = ip.Food(fd_str)
+    assert fd_item.location is None
+    assert fd_item.frm is None
+
+    # Missing from or missing location should set both
+    fd_str = ['Food 2013-05-02T11:09:01', '@ work', '1 banana']
+    fd_item = ip.Food(fd_str)
+    assert fd_item.location == 'work'
+    assert fd_item.frm == 'work'
+    fd_str = ['Food 2013-05-02T11:09:01', '> work',
+              'Chow Mein']
+    fd_item = ip.Food(fd_str)
+    assert fd_item.frm == 'work'
+    assert fd_item.location == 'work'
+
+    def check_location_and_frm(before, after, shouldbe):
+        fd_str = ['Food 2013-05-02T11:09:01', before + '@' + after, 'Chow Mein']
+        fd_item = ip.Food(fd_str)
+        assert fd_item.location == shouldbe
+        fd_str = ['Food 2013-05-02T11:09:01', before + '>' + after, 'Chow Mein']
+        fd_item = ip.Food(fd_str)
+        assert fd_item.frm == shouldbe
+
+    # Multi-word from and locations should be accepted
+    check_location_and_frm('', ' Panda Express', 'Panda Express')
+
+    # Leading Space
+    check_location_and_frm(' ', ' Panda', 'Panda')
+    check_location_and_frm('  ', ' Panda', 'Panda')
+
+    # Trailing Space
+    check_location_and_frm('', ' Panda ', 'Panda')
+    check_location_and_frm('', ' Panda  ', 'Panda')
+
+    # Space between delimiter
+    check_location_and_frm('', 'Panda ', 'Panda')  # Missing
+    check_location_and_frm('', '  Panda ', 'Panda')  # Extra
