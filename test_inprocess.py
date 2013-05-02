@@ -53,26 +53,32 @@ def test_CMD_singleline():
 
 
 def test_Food_breakFline():
-    # Test Divisors except units
-    assert ip.Food.breakFLine('oranges') == (None, None, 'oranges', None)
-    assert ip.Food.breakFLine('  oranges') == (None, None, 'oranges', None)
-    assert ip.Food.breakFLine('2 oranges') == ('2', None, 'oranges', None)
-    assert ip.Food.breakFLine('2 oranges') == ('2', None, 'oranges', None)
-    assert ip.Food.breakFLine('*2 oranges') == ('2', None, 'oranges', None)
-    assert ip.Food.breakFLine(' *2 oranges ') == ('2', None, 'oranges', None)
-    assert ip.Food.breakFLine(' * 2 oranges ') == ('2', None, 'oranges', None)
-    assert ip.Food.breakFLine('* 2 oranges') == ('2', None, 'oranges', None)
-    assert ip.Food.breakFLine('- 2 oranges') == ('2', None, 'oranges', None)
-    assert ip.Food.breakFLine('+ 2 oranges') == ('2', None, 'oranges', None)
-    assert ip.Food.breakFLine('* 2 oranges --- comment') == ('2', None, 'oranges', 'comment')
-    assert ip.Food.breakFLine('* 2 oranges --- comment ') == ('2', None, 'oranges', 'comment')
-    assert ip.Food.breakFLine('* 2 oranges--- comment') == ('2', None, 'oranges', 'comment')
-    assert ip.Food.breakFLine('* 2 oranges ---comment') == ('2', None, 'oranges', 'comment')
-    assert ip.Food.breakFLine('* 2 oranges---comment') == ('2', None, 'oranges', 'comment')
+    # Match basic name and quantity
+    assert ip.Food.breakFLine('oranges') == (None, None, 'oranges', None)   # Plain item
+    assert ip.Food.breakFLine('2 oranges') == ('2', None, 'oranges', None)  # Quantity
+    assert ip.Food.breakFLine('Take 5') == (None, None, 'Take 5', None)     # Check number after word
+
+    # Take care of bullets and indenting
+    assert ip.Food.breakFLine('  oranges') == (None, None, 'oranges', None)      # indentation
+    assert ip.Food.breakFLine('2  oranges') == ('2', None, 'oranges', None)      # Extra space between
+    assert ip.Food.breakFLine('* 2 oranges') == ('2', None, 'oranges', None)     # Bullet
+    assert ip.Food.breakFLine('*2 oranges') == ('2', None, 'oranges', None)      # Missing space with bullet
+    assert ip.Food.breakFLine(' *2 oranges ') == ('2', None, 'oranges', None)    # indent with bullet
+    assert ip.Food.breakFLine(' * 2 oranges ') == ('2', None, 'oranges', None)   # indent bullet spacing
+    assert ip.Food.breakFLine(' *  2 oranges ') == ('2', None, 'oranges', None)  # indent bullet extra spacing
+    assert ip.Food.breakFLine('- 2 oranges') == ('2', None, 'oranges', None)     # Other bullet characters
+
+    # Check comments and spacing
     assert ip.Food.breakFLine('pizza --- comment') == (None, None, 'pizza', 'comment')
+    assert ip.Food.breakFLine('pizza --- comment ') == (None, None, 'pizza', 'comment')
+    assert ip.Food.breakFLine('pizza--- comment') == (None, None, 'pizza', 'comment')
+    assert ip.Food.breakFLine('pizza ---comment') == (None, None, 'pizza', 'comment')
+    assert ip.Food.breakFLine('pizza---comment') == (None, None, 'pizza', 'comment')
     assert ip.Food.breakFLine('2 slices pizza') == ('2', 'slices', 'pizza', None)
     assert ip.Food.breakFLine('2 slices pizza --- comment') == ('2', 'slices', 'pizza', 'comment')
 
+    # Multi word comments should be alowed
+    assert ip.Food.breakFLine('oranges---are really good 10/10') == (None, None, 'oranges', 'are really good 10/10')
     # Test all divisors
     quanties = ['oz', 'cup', 'cups', 'pack', 'packs', 'slice', 'slices',
                 'piece', 'pieces', 'plate', 'plates', 'bowl', 'bowls']

@@ -81,7 +81,7 @@ class Food(Parseable):
         quanties = ['oz', 'cup', 'cups', 'pack', 'packs', 'slice', 'slices',
                     'piece', 'pieces', 'plate', 'plates', 'bowl', 'bowls']
         q_string = r'|'.join(quanties)
-        f_mch = re.match((r"(\s*[-*+]\s*)?(([\d/]+)\s*("
+        f_mch = re.match((r"(\s*[-*]\s*)?(([\d/]+)\s*("
                           + q_string +
                           r")?\s+)?(.+)"), x[0])
         # Return tuple is ()
