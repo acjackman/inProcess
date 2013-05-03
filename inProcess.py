@@ -247,14 +247,15 @@ class HealthTrack(Parseable):
 
 class Task(Parseable):
     """docstring for Task"""
-    p = re.compile(r'!-\s*(.+)\s*(!)?')
+    p = re.compile(r'\s*!-\s*(.+)')
     multiline = True
 
     def __init__(self, strings):
         super(Task, self).__init__()
-        self.taskstring = self.p.match(strings[0]).group(1)
-        if self.p.match(strings[0]).group(2):
+        self.taskstring = self.p.match(strings[0]).group(1).strip()
+        if self.taskstring[-1] == '!':
             self.flagged = True
+            self.taskstring = self.taskstring[:-1].strip()
         else:
             self.flagged = False
         self.notes = map(lambda s: s.strip(), strings[1:])

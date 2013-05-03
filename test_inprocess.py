@@ -259,5 +259,30 @@ class TestTask:
         assert not ip.Task.identify('! Test Task')
         assert not ip.Task.identify('Test Task')
 
+    def test_task_multiline(self):
+        assert ip.Task.multiline
 
+    def test_task_initialize(self):
+        def t_check(strings, task, notes=[], f=False):
+            t = ip.Task(strings)
+            assert t.taskstring == task
+            assert t.notes == notes
+            assert t.flagged == f
 
+        # Check Basic Tag creation
+        t_check(['!- Task'], 'Task')
+        t_check([' !- Task'], 'Task')
+        t_check(['!- Task '], 'Task')
+        t_check(['!-  Task '], 'Task')
+        t_check(['!-Task'], 'Task')
+        t_check(['!- Task String that is long'], 'Task String that is long', f=False)
+
+        # Check Flag
+        t_check(['!- Task String that is long !'], 'Task String that is long', f=True)
+        t_check(['!- Task !'], 'Task', f=True)
+        t_check(['!- Task!'], 'Task', f=True)
+        t_check(['!- Task !'], 'Task', f=True)
+        t_check(['!- DoSomething! !'], 'DoSomething!', f=True)
+        t_check(['!- DoSomething!!'], 'DoSomething!', f=True)
+        t_check(['!- DoSomething!'], 'DoSomething', f=True)
+        t_check(['!- DoSomething!else'], 'DoSomething!else', f=False)
