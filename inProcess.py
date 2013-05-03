@@ -247,7 +247,7 @@ class HealthTrack(Parseable):
 
 class Task(Parseable):
     """docstring for Task"""
-    p = re.compile(r'!- (.*) (!)?')
+    p = re.compile(r'!-\s*(.+)\s*(!)?')
     multiline = True
 
     def __init__(self, strings):

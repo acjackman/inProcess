@@ -243,3 +243,21 @@ class TestHealthTrack:
         lt = ip.HealthTrack('Health Track: 2013-05-02T20:18:14 --- Event that has description')
         assert lt.time == '2013-05-02T20:18:14'
         assert lt.event == 'Event that has description'
+
+
+class TestTask:
+    def test_Task_identify(self):
+        assert ip.Task.identify('!- Task')
+        assert ip.Task.identify('!-Task')
+        assert ip.Task.identify('!- Test Task')
+        assert ip.Task.identify('!- Test Task ')
+        assert ip.Task.identify('!-  Test Task  ')
+        assert ip.Task.identify('!-  Test Task !')
+        assert ip.Task.identify('!-  Test Task!')
+        assert ip.Task.identify('!-  Test Task ! ')
+        assert not ip.Task.identify('- Test Task')
+        assert not ip.Task.identify('! Test Task')
+        assert not ip.Task.identify('Test Task')
+
+
+
