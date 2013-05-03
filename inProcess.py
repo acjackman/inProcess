@@ -181,13 +181,13 @@ class Statistic(Parseable):
         m_obj = self.p.match(string)
         self.StatName = m_obj.group(1)
         self.time = m_obj.group(2)
-        self.extras = m_obj.group(3).split('. ')
+        self.extras = filter(None, m_obj.group(3).split('. '))
 
     def record(self):
         data_dir = self.settings['data_dir']
         with open(data_dir + self.StatName.replace(' ', '')+'.csv', 'ab') as csvfile:
             spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow([self.time] + filter(None, self.extras))
+            spamwriter.writerow([self.time] + self.extras)
         return True
 
     @classmethod

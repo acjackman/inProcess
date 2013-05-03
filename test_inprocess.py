@@ -177,3 +177,29 @@ class TestJournal:
         jrnl = ip.Journal(['Journal 2013-05-02T13:33:04'] + lines)
         assert jrnl.time == '2013-05-02T13:33:04'
         assert jrnl.lines == lines
+
+
+class TestStatistic:
+    def test_Statistic_identify(self):
+        assert ip.Statistic.identify('Statistic. 2013-05-02T14:18:26')
+        assert ip.Statistic.identify('Statistic. 2013-05-02T14:18:26. Test')
+        assert ip.Statistic.identify('Statistic. 2013-05-02T14:18:26. Test. Test_2')
+        assert not ip.Statistic.identify('Statistic: 2013-05-02T14:18:26')
+        assert not ip.Statistic.identify('Statistic.2013-05-02T14:18:26')
+
+    def test_Statistic_initialize(self):
+        def s_check(string, name, time, extras=[]):
+            st = ip.Statistic(string)
+            print st
+            assert st.StatName == name
+            assert st.time == time
+            assert st.extras == extras
+
+        s_check('Test. 2013-05-02T19:30:47', 'Test', '2013-05-02T19:30:47')
+        s_check('Test. 2013-05-02T19:30:47. ', 'Test', '2013-05-02T19:30:47')
+        s_check('Evening Prayer. 2013-05-02T19:34:51', 'Evening Prayer',
+                '2013-05-02T19:34:51')
+        s_check('Sleep. 2013-05-02T19:35:06. 2013-05-02T19:43:43', 'Sleep',
+                '2013-05-02T19:35:06', extras=['2013-05-02T19:43:43'])
+        s_check('Book. 2013-05-02T19:51:41. Author. Title. 230', 'Book',
+                '2013-05-02T19:51:41', extras=['Author', 'Title', '230'])
