@@ -258,6 +258,9 @@ class TestTask:
         assert not ip.Task.identify('- Test Task')
         assert not ip.Task.identify('! Test Task')
         assert not ip.Task.identify('Test Task')
+        assert not ip.Calendar.identify('!-')
+        assert not ip.Calendar.identify('!- ')
+        assert not ip.Calendar.identify('!-  ')
 
     def test_task_multiline(self):
         assert ip.Task.multiline
@@ -286,3 +289,26 @@ class TestTask:
         t_check(['!- DoSomething!!'], 'DoSomething!', f=True)
         t_check(['!- DoSomething!'], 'DoSomething', f=True)
         t_check(['!- DoSomething!else'], 'DoSomething!else', f=False)
+
+
+class TestCalendar:
+    def test_Calendar_identify(self):
+        assert ip.Calendar.identify('!@ Event')
+        assert ip.Calendar.identify('!@  Event')
+        assert ip.Calendar.identify(' !@ Event')
+        assert ip.Calendar.identify('!@Event')
+        assert not ip.Calendar.identify('!- Event')
+        assert not ip.Calendar.identify('@ Event')
+        assert not ip.Calendar.identify('!@')
+        assert not ip.Calendar.identify('!@ ')
+        assert not ip.Calendar.identify('!@  ')
+
+    def test_Calendar_initialize(self):
+        def c_check(string, event):
+            c = ip.Calendar(string)
+            assert c.eventstring == event
+
+        c_check('!@ Event', 'Event')
+        c_check('!@  Event', 'Event')
+        c_check('!@ Event ', 'Event')
+        c_check('!@ Event at 4pm /w ', 'Event at 4pm /w')

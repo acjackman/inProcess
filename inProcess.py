@@ -247,7 +247,7 @@ class HealthTrack(Parseable):
 
 class Task(Parseable):
     """docstring for Task"""
-    p = re.compile(r'\s*!-\s*(.+)')
+    p = re.compile(r'\s*!-\s*(?=[^\s])(.+)')
     multiline = True
 
     def __init__(self, strings):
@@ -283,11 +283,11 @@ class Task(Parseable):
 
 class Calendar(Parseable):
     """docstring for Calendar"""
-    p = re.compile(r'!@ (.*)')
+    p = re.compile(r'\s*!@\s*(?=[^\s])(.+)')
 
     def __init__(self, string):
         super(Calendar, self).__init__()
-        self.eventstring = self.p.match(string).group(1)
+        self.eventstring = self.p.match(string).group(1).strip()
 
     def record(self):
         os.system("osascript -e 'tell application \"Fantastical\""
