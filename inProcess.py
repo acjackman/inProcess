@@ -3,6 +3,7 @@ import optparse
 import re
 import os
 from os.path import expanduser
+import sys
 from subprocess import Popen, PIPE, STDOUT
 import csv
 from datetime import datetime
@@ -305,11 +306,8 @@ class Calendar(Parseable):
 
 
 def main():
-    # Set Variables
-    settings = json.loads(open(expanduser('~/.inprocess.json'), 'rb').read())
-    inbox_dir = settings['inbox_dir']
-    inbox_file = settings['inbox_file']
-    storage_dir = settings['storage_dir']
+    # Set default settings file
+    settings_file = '~/.inprocess.json'
 
     # Redefine Parser
     class MyParser(optparse.OptionParser):
@@ -317,13 +315,31 @@ def main():
             return self.epilog
 
     # Parse Command Line options
-    p = MyParser(epilog=(
-        '\nStorage Locations:\n'
-        'Inbox: %s\n'
-        'inx files: %s\n'
-        'inx storage: %s\n') % (inbox_file, inbox_dir, storage_dir)
+    parser = MyParser(epilog=(
+        '\n(c)2013 Adam Jackman (adam@acjackman.com)\n')
     )
-    options, arguments = p.parse_args()
+    parser.add_option("-s", "--settings", dest="settings_file",
+                      help="set settings file", metavar="FILE")
+    parser.add_option('-l', '--location', action="store_true", default=False,
+                      help="Print storage locations")
+    options, arguments = parser.parse_args()
+
+    # Set Variables
+    if options.settings_file is not None:
+        settings_file = options.settings_file
+    settings = json.loads(open(expanduser(settings_file), 'rb').read())
+    inbox_dir = settings['inbox_dir']
+    inbox_file = settings['inbox_file']
+    storage_dir = settings['storage_dir']
+
+    if options.location:
+        print('Storage Locations:\n'
+              'Settings:    %s\n'
+              'Inbox:       %s\n'
+              'inx files:   %s\n'
+              'inx storage: %s') % (settings_file, inbox_file, inbox_dir,
+                                    storage_dir)
+        sys.exit(0)
 
     # List parseable things
     parseables = [Statistic, Task, Food, Calendar, Journal,
