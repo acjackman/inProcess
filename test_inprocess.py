@@ -1,4 +1,7 @@
 import inProcess as ip
+import os
+import json
+from datetime import datetime, timedelta
 
 
 def general_identify_end(cls):
@@ -312,3 +315,34 @@ class TestCalendar:
         c_check('!@  Event', 'Event')
         c_check('!@ Event ', 'Event')
         c_check('!@ Event at 4pm /w ', 'Event at 4pm /w')
+
+
+class FunctionalBase:
+    def create_env(self, tdir):
+        self.set_file = tdir.join("settings.json")
+        self.inbox_dir = tdir.mkdir("Inbox")
+        self.inbox_file = tdir.join("inbox.md")
+        self.data_dir = tdir.mkdir("Data")
+        tmp_settings = {
+            "inbox_dir": str(self.inbox_dir.realpath()) + '/',
+            "inbox_file": str(self.inbox_file.realpath()),
+            "data_dir": str(self.data_dir.realpath()) + '/',
+            "storage_dir": str(tdir.mkdir("LogStorage").realpath()) + '/'
+        }
+        self.set_file.write(json.dumps(tmp_settings))
+
+    def create_inxfile(self, date, contents, ext='md'):
+        inx = self.inbox_dir.join("inx " + date + '.' + ext)
+        inx.write(contents)
+
+    def run_inProcess(self):
+        ip.main(settings_file=str(self.set_file.realpath()))
+
+
+class TestBasicFunctional(FunctionalBase):
+    def test_create_inbox(self, tmpdir):
+        self.create_env(tmpdir)
+        self.create_inxfile('2013-05-03T16-21-33', 'test')
+        self.run_inProcess()
+        assert len(self.inbox_dir.listdir()) == 0
+        assert self.inbox_file.check()

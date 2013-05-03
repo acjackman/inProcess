@@ -305,10 +305,7 @@ class Calendar(Parseable):
 ##############################################################################
 
 
-def main():
-    # Set default settings file
-    settings_file = '~/.inprocess.json'
-
+def main(settings_file='~/.inprocess.json', opt_location=False):
     # Redefine Parser
     class MyParser(optparse.OptionParser):
         def format_epilog(self, formatter):
@@ -332,7 +329,7 @@ def main():
     inbox_file = settings['inbox_file']
     storage_dir = settings['storage_dir']
 
-    if options.location:
+    if options.location or opt_location:
         print('Storage Locations:\n'
               'Settings:    %s\n'
               'Inbox:       %s\n'
