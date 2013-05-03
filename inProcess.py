@@ -198,21 +198,21 @@ class Statistic(Parseable):
 class LifeTrack(Parseable):
     """docstring for LifeTrack"""
     p = re.compile((
-        r"\s*Life Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
-        r"\s*(.*)")
+        r"\s*Life Track:\s*([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})"
+        r"\s*---\s*(?=[^\s])(.+)")
     )
 
     def __init__(self, string):
         super(LifeTrack, self).__init__()
         m_obj = self.p.match(string)
         self.time = m_obj.group(1)
-        self.Event = m_obj.group(2)
+        self.event = m_obj.group(2)
 
     def record(self):
         data_dir = self.settings['data_dir']
         with open(data_dir + 'LifeTrack.csv', 'ab') as csvfile:
             spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow([self.time, self.Event])
+            spamwriter.writerow([self.time, self.event])
         return True
 
     @classmethod
@@ -223,21 +223,21 @@ class LifeTrack(Parseable):
 class HealthTrack(Parseable):
     """docstring for HealthTrack"""
     p = re.compile((
-        r"\s*Health Track: ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}) ---"
-        r"\s*(.*)")
+        r"\s*Health Track:\s*([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})"
+        r"\s*---\s*(?=[^\s])(.+)")
     )
 
     def __init__(self, string):
         super(HealthTrack, self).__init__()
         m_obj = self.p.match(string)
         self.time = m_obj.group(1)
-        self.Event = m_obj.group(2)
+        self.event = m_obj.group(2)
 
     def record(self):
         data_dir = self.settings['data_dir']
         with open(data_dir + 'HealthTrack.csv', 'ab') as csvfile:
             spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow([self.time, self.Event])
+            spamwriter.writerow([self.time, self.event])
         return True
 
     @classmethod

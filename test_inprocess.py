@@ -203,3 +203,43 @@ class TestStatistic:
                 '2013-05-02T19:35:06', extras=['2013-05-02T19:43:43'])
         s_check('Book. 2013-05-02T19:51:41. Author. Title. 230', 'Book',
                 '2013-05-02T19:51:41', extras=['Author', 'Title', '230'])
+
+
+class TestLifeTrack:
+    def test_LifeTrack_identify(self):
+        assert ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26 --- Event')
+        assert ip.LifeTrack.identify(' Life Track: 2013-05-02T19:59:26 --- Event')
+        assert ip.LifeTrack.identify('  Life Track: 2013-05-02T19:59:26 --- Event')
+        assert ip.LifeTrack.identify('Life Track:2013-05-02T19:59:26 --- Event')
+        assert ip.LifeTrack.identify('Life Track:  2013-05-02T19:59:26 --- Event')
+        assert ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26 --- Event with words')
+        assert ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26 ---  Event')
+        assert ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26 ---Event')
+        assert ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26--- Event')
+        assert not ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26--- ')
+        assert not ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26---  ')
+
+    def test_LifeTrack_initialize(self):
+        lt = ip.LifeTrack('Life Track: 2013-05-02T20:18:14 --- Event that has description')
+        assert lt.time == '2013-05-02T20:18:14'
+        assert lt.event == 'Event that has description'
+
+
+class TestHealthTrack:
+    def test_HealthTrack_identify(self):
+        assert ip.HealthTrack.identify('Health Track: 2013-05-02T19:59:26 --- Event')
+        assert ip.HealthTrack.identify(' Health Track: 2013-05-02T19:59:26 --- Event')
+        assert ip.HealthTrack.identify('  Health Track: 2013-05-02T19:59:26 --- Event')
+        assert ip.HealthTrack.identify('Health Track:2013-05-02T19:59:26 --- Event')
+        assert ip.HealthTrack.identify('Health Track:  2013-05-02T19:59:26 --- Event')
+        assert ip.HealthTrack.identify('Health Track: 2013-05-02T19:59:26 --- Event with words')
+        assert ip.HealthTrack.identify('Health Track: 2013-05-02T19:59:26 ---  Event')
+        assert ip.HealthTrack.identify('Health Track: 2013-05-02T19:59:26 ---Event')
+        assert ip.HealthTrack.identify('Health Track: 2013-05-02T19:59:26--- Event')
+        assert not ip.HealthTrack.identify('Health Track: 2013-05-02T19:59:26--- ')
+        assert not ip.HealthTrack.identify('Health Track: 2013-05-02T19:59:26---  ')
+
+    def test_HealthTrack_initialize(self):
+        lt = ip.HealthTrack('Health Track: 2013-05-02T20:18:14 --- Event that has description')
+        assert lt.time == '2013-05-02T20:18:14'
+        assert lt.event == 'Event that has description'
