@@ -358,8 +358,7 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
     # Setup output
     inbox_header = ("# Inbox\n`inbox.md` created " +
                     now.strftime('%B %d, %Y %H:%M:%S') +
-                    "\n\n* * * * * * * * * * * * * * * * *"
-                    " * * * * * * * * * * * * *\n")
+                    "\n\n*" + " *"*29 + "\n")
     inbox_contents = ''
 
     # Loop through the list of files
@@ -389,6 +388,7 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
         # Move the file to storage
         shutil.move(file, new_files[f_index])
     # Write inbox contents to file
+    inbox_contents = re.sub(r'\n\s+\n', '\n\n', inbox_contents)  # Change inbox
     if re.sub('\n', '', inbox_contents) != '':
         f = open(inbox_file, 'wb')
         inbox_contents = inbox_header + inbox_contents

@@ -365,3 +365,13 @@ class TestBasicFunctional(FunctionalBase):
         assert lines[4] == 'test'
         assert lines[5] == ''
         assert len(lines) == 6
+
+    def test_no_empty_inbox(self, tmpdir):
+        self.create_env(tmpdir)
+        self.create_inxfile('2013-05-03T16-21-33', '')
+        self.create_inxfile('2013-05-03T16-21-33', ' ')
+        self.create_inxfile('2013-05-03T16-21-33', '\n\n\n')
+        self.create_inxfile('2013-05-03T16-21-33', '\n  \n \n')
+        self.create_inxfile('2013-05-03T16-21-33', '\n\t \t \n \n')
+        self.run_inProcess()
+        self.inbox_exits(true=False)
