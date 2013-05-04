@@ -1,4 +1,5 @@
 import inProcess as ip
+from inProcess import RecordError
 import json
 from datetime import datetime  # timedelta
 
@@ -374,6 +375,35 @@ class TestBasicFunctional(FunctionalBase):
         assert lines[4] == 'test'
         assert lines[5] == ''
         assert len(lines) == 6
+
+    def test_HealthTrack_record_basic(self, tmpdir):
+        self.create_env(tmpdir)
+        # Check that HealthTrack records properly, with no inbox
+        self.create_inxfile('2013-05-03T16-21-33', 'Health Track: 2013-05-03T20:24:20 --- Test')
+        self.run_inProcess()
+        self.inbox_exits(False)
+        assert self.data_dir.join('HealthTrack.csv').check()
+
+    def test_HealthTrack_record_Exception(self, tmpdir, monkeypatch):
+        self.create_env(tmpdir)
+
+        def mock_record(self):
+            print 'Found'
+            raise RecordError('Unknown error')
+        monkeypatch.setattr(ip.HealthTrack, 'record', mock_record)
+        self.create_inxfile('2013-05-03T16-21-33', 'Health Track: 2013-05-03T20:24:20 --- Test')
+        self.run_inProcess()
+        self.inbox_exits(True)
+        monkeypatch.undo()
+
+    def test_HealthTrack_record_missing_data_dir(self, tmpdir):
+        self.create_env(tmpdir)
+        # With Missing Data Dir
+        self.data_dir.remove()
+        self.create_inxfile('2013-05-03T16-21-34', 'Health Track: 2013-05-03T21:05:47 --- Test')
+        self.run_inProcess()
+        assert not self.data_dir.check()
+        self.inbox_exits()
 
     def test_no_empty_inbox(self, tmpdir):
         self.create_env(tmpdir)

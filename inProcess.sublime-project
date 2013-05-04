@@ -17,7 +17,7 @@
     "build_systems": [
         {
             "name": "run Tests",
-            "cmd": ["py.test"]
+            "cmd": ["/usr/local/share/python/py.test"]
         }
     ]
 }

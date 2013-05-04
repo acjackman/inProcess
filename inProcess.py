@@ -15,12 +15,21 @@ import json
 ##############################################################################
 
 
+class RecordError(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return repr(self.msg)
+
+
 class Parseable(object):
     """The Parseable superclass"""
     def __init__(self):
         super(Parseable, self).__init__()
     multiline = False
-    settings = json.loads(open(expanduser('./Test/settings.json'), 'rb').read())
+    settings = {"inbox_dir": ".", "inbox_file": ".", "data_dir": ".",
+                "storage_dir": "."}
 
     def record(self):
         pass
@@ -47,7 +56,7 @@ class Inbox(Parseable):
         super(Inbox, self).__init__()
 
     def record(self):
-        return True
+        pass
 
     @classmethod
     def identify(cls, string):
@@ -66,7 +75,7 @@ class CMD(Parseable):
         super(CMD, self).__init__()
 
     def record(self):
-        return True
+        pass
 
     @classmethod
     def identify(cls, string):
@@ -127,11 +136,15 @@ class Food(Parseable):
 
     def record(self):
         data_dir = self.settings['data_dir']
-        with open(data_dir + 'Food.csv', 'ab') as csvfile:
-            spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            for item in self.items:
-                spamwriter.writerow([self.time, self.location, self.frm] + list(item))
-        return True
+        try:
+            with open(data_dir + 'Food.csv', 'ab') as csvfile:
+                spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+                for item in self.items:
+                    spamwriter.writerow([self.time, self.location, self.frm] + list(item))
+        except IOError:
+            raise RecordError('Problem writing to file')
+        except:
+            raise RecordError('Unknown error')
 
     @classmethod
     def identify(cls, string):
@@ -156,7 +169,8 @@ class Journal(Parseable):
     def record(self):
         cmd = Popen(['dayone new'], stdout=PIPE, stdin=PIPE, stderr=STDOUT, shell=True)
         results = cmd.communicate(input='\n'.join(self.lines))
-        return results[0].startswith('New entry')
+        if not results[0].startswith('New entry'):
+            raise RecordError("Couldn't record journal entry")
 
     @classmethod
     def identify(cls, string):
@@ -184,10 +198,14 @@ class Statistic(Parseable):
 
     def record(self):
         data_dir = self.settings['data_dir']
-        with open(data_dir + self.StatName.replace(' ', '')+'.csv', 'ab') as csvfile:
-            spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow([self.time] + self.extras)
-        return True
+        try:
+            with open(data_dir + self.StatName.replace(' ', '')+'.csv', 'ab') as csvfile:
+                spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+                spamwriter.writerow([self.time] + self.extras)
+        except IOError:
+            raise RecordError('Problem writing to file')
+        except:
+            raise RecordError('Unknown error')
 
     @classmethod
     def identify(cls, string):
@@ -209,10 +227,14 @@ class LifeTrack(Parseable):
 
     def record(self):
         data_dir = self.settings['data_dir']
-        with open(data_dir + 'LifeTrack.csv', 'ab') as csvfile:
-            spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow([self.time, self.event])
-        return True
+        try:
+            with open(data_dir + 'LifeTrack.csv', 'ab') as csvfile:
+                spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+                spamwriter.writerow([self.time, self.event])
+        except IOError:
+            raise RecordError('Problem writing to file')
+        except:
+            raise RecordError('Unknown error')
 
     @classmethod
     def identify(cls, string):
@@ -234,10 +256,15 @@ class HealthTrack(Parseable):
 
     def record(self):
         data_dir = self.settings['data_dir']
-        with open(data_dir + 'HealthTrack.csv', 'ab') as csvfile:
-            spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow([self.time, self.event])
-        return True
+        print data_dir
+        try:
+            with open(data_dir + 'HealthTrack.csv', 'ab') as csvfile:
+                spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+                spamwriter.writerow([self.time, self.event])
+        except IOError:
+            raise RecordError('Problem writing to file')
+        except:
+            raise RecordError('Unknown error')
 
     @classmethod
     def identify(cls, string):
@@ -292,7 +319,6 @@ class Calendar(Parseable):
         os.system("osascript -e 'tell application \"Fantastical\""
                   " to parse sentence \"" + self.eventstring +
                   "\" add with immediately'")
-        return True
 
     @classmethod
     def identify(cls, string):
@@ -327,6 +353,7 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
     if options.settings_file is not None:
         settings_file = options.settings_file
     settings = json.loads(open(expanduser(settings_file), 'rb').read())
+    Parseable.settings = settings  # Pass along settings to the Parseable Class
     inbox_dir = settings['inbox_dir']
     inbox_file = settings['inbox_file']
     storage_dir = settings['storage_dir']
@@ -375,10 +402,14 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
                         while ident.identify_end(line) is None:
                             lines = lines + [line]
                             line = f.readline()
-                        if not ident(lines).record():
+                        try:
+                            ident(lines).record()
+                        except:
                             inbox_contents = inbox_contents + ''.join(lines)
                     else:
-                        if not ident(line).record():
+                        try:
+                            ident(line).record()
+                        except:
                             inbox_contents = inbox_contents + line
                     break
             else:  # Runs if we don't know how to parse the current line
