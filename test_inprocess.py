@@ -352,23 +352,30 @@ class FunctionalBase:
 
 
 class TestBasicFunctional(FunctionalBase):
-    def test_create_inbox(self, tmpdir):
+    def test_create_inbox(self, tmpdir, monkeypatch):
         self.create_env(tmpdir)
         self.create_inxfile('2013-05-03T16-21-33', 'test')
+
+        def mock_now():
+            return datetime(2013, 5, 1, 12, 30, 0, 0)
+        monkeypatch.setattr(ip, 'get_now', mock_now)
+
         self.run_inProcess()
+
         self.num_files_inbox(0)
         self.num_files_storage(1)
         self.inbox_exits()
         # Check inbox contents
         lines = self.inbox_file.read().splitlines()
         assert lines[0] == '# Inbox'
-        # assert lines[1] == '`inbox.md` created May 03, 2013 17:23:12'  # need
+        assert lines[1] == '`inbox.md` created May 01, 2013 12:30:00'  # need
         # to stub out datetime.now to give a consistent date first
         assert lines[2] == ''
         assert lines[3] == '*' + ' *'*29
         assert lines[4] == 'test'
         assert lines[5] == ''
         assert len(lines) == 6
+        assert 0
 
     def test_no_empty_inbox(self, tmpdir):
         self.create_env(tmpdir)

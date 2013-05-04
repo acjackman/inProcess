@@ -305,6 +305,10 @@ class Calendar(Parseable):
 ##############################################################################
 
 
+def get_now():
+    return datetime.now()
+
+
 def main(settings_file='~/.inprocess.json', opt_location=False):
     # Redefine Parser
     class MyParser(optparse.OptionParser):
@@ -349,7 +353,7 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
     files = filter(lambda file: fp.match(file), files)
     old_files = [inbox_dir + file for file in files]
     new_files = [storage_dir + file for file in files]
-    now = datetime.now()
+    now = get_now()
     if os.path.exists(inbox_file):
         inbox_store = storage_dir + "inbox " + now.strftime('%Y-%m-%dT%H-%M-%S') + ".md"
         old_files = [inbox_file] + old_files
