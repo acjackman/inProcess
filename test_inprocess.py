@@ -1,5 +1,4 @@
 import inProcess as ip
-import os
 import json
 from datetime import datetime, timedelta
 
@@ -323,11 +322,12 @@ class FunctionalBase:
         self.inbox_dir = tdir.mkdir("Inbox")
         self.inbox_file = tdir.join("inbox.md")
         self.data_dir = tdir.mkdir("Data")
+        self.storage_dir = tdir.mkdir("LogStorage")
         tmp_settings = {
             "inbox_dir": str(self.inbox_dir.realpath()) + '/',
             "inbox_file": str(self.inbox_file.realpath()),
             "data_dir": str(self.data_dir.realpath()) + '/',
-            "storage_dir": str(tdir.mkdir("LogStorage").realpath()) + '/'
+            "storage_dir": str(self.storage_dir.realpath()) + '/'
         }
         self.set_file.write(json.dumps(tmp_settings))
 
@@ -347,6 +347,9 @@ class FunctionalBase:
     def num_files_inbox(self, num):
         assert len(self.inbox_dir.listdir()) == num
 
+    def num_files_storage(self, num):
+        assert len(self.storage_dir.listdir()) == num
+
 
 class TestBasicFunctional(FunctionalBase):
     def test_create_inbox(self, tmpdir):
@@ -354,6 +357,7 @@ class TestBasicFunctional(FunctionalBase):
         self.create_inxfile('2013-05-03T16-21-33', 'test')
         self.run_inProcess()
         self.num_files_inbox(0)
+        self.num_files_storage(1)
         self.inbox_exits()
         # Check inbox contents
         lines = self.inbox_file.read().splitlines()
@@ -375,3 +379,16 @@ class TestBasicFunctional(FunctionalBase):
         self.create_inxfile('2013-05-03T16-21-33', '\n\t \t \n \n')
         self.run_inProcess()
         self.inbox_exits(true=False)
+
+    def test_remove_whitespace_on_blanklines(self, tmpdir):
+        cnts = ('the next line should not have whitespace:\n'
+                '  \n'
+                'also the next line\n'
+                '\t\n'
+                'but there should be three distinct paragraphs\n')
+        self.create_env(tmpdir)
+        self.create_inxfile('2013-05-03T16-21-33', cnts)
+        self.run_inProcess()
+        lines = self.inbox_file.read().splitlines()
+        assert lines[5] == ''
+        assert lines[7] == ''
