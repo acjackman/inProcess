@@ -1,6 +1,6 @@
 import inProcess as ip
 import json
-from datetime import datetime, timedelta
+from datetime import datetime  # timedelta
 
 
 def general_identify_end(cls):
@@ -80,7 +80,7 @@ class TestFood:
         assert ip.Food.breakFLine('2 slices pizza') == ('2', 'slices', 'pizza', None)
         assert ip.Food.breakFLine('2 slices pizza --- comment') == ('2', 'slices', 'pizza', 'comment')
 
-        # Multi word comments should be alowed
+        # Multi word comments should be allowed
         assert ip.Food.breakFLine('oranges---are really good 10/10') == (None, None, 'oranges', 'are really good 10/10')
         # Test all divisors
         quanties = ['oz', 'cup', 'cups', 'pack', 'packs', 'slice', 'slices',
@@ -368,14 +368,12 @@ class TestBasicFunctional(FunctionalBase):
         # Check inbox contents
         lines = self.inbox_file.read().splitlines()
         assert lines[0] == '# Inbox'
-        assert lines[1] == '`inbox.md` created May 01, 2013 12:30:00'  # need
-        # to stub out datetime.now to give a consistent date first
+        assert lines[1] == '`inbox.md` created May 01, 2013 12:30:00'
         assert lines[2] == ''
         assert lines[3] == '*' + ' *'*29
         assert lines[4] == 'test'
         assert lines[5] == ''
         assert len(lines) == 6
-        assert 0
 
     def test_no_empty_inbox(self, tmpdir):
         self.create_env(tmpdir)

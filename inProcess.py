@@ -16,7 +16,7 @@ import json
 
 
 class Parseable(object):
-    """docstring for Parseable"""
+    """The Parseable superclass"""
     def __init__(self):
         super(Parseable, self).__init__()
     multiline = False
@@ -39,13 +39,12 @@ class Parseable(object):
 
 
 class Inbox(Parseable):
-    """docstring for Inbox"""
+    """psudo-parseable to match Inbox heading"""
     p = re.compile(r"# Inbox")
     multiline = True
 
-    def __init__(self, arg):
+    def __init__(self):
         super(Inbox, self).__init__()
-        self.arg = arg
 
     def record(self):
         return True
@@ -60,12 +59,11 @@ class Inbox(Parseable):
 
 
 class CMD(Parseable):
-    """docstring for Command Lines"""
+    """psudo-Parseable to match commands"""
     p = re.compile(r"\s*CMD\s+\w+")
 
-    def __init__(self, arg):
+    def __init__(self):
         super(CMD, self).__init__()
-        self.arg = arg
 
     def record(self):
         return True
@@ -76,7 +74,7 @@ class CMD(Parseable):
 
 
 class Food(Parseable):
-    """docstring for Food"""
+    """Food Log parseable"""
     p = re.compile(r'\s*Food ([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})')
     multiline = True
 
@@ -145,7 +143,7 @@ class Food(Parseable):
 
 
 class Journal(Parseable):
-    """docstring for Journal"""
+    """Add journal entries to Day One"""
     p = re.compile(r'\s*Journal\s+([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})')
     multiline = True
 
@@ -170,7 +168,7 @@ class Journal(Parseable):
 
 
 class Statistic(Parseable):
-    """docstring for Statistic"""
+    """Tack statistics that are not otherwise matched"""
     p = re.compile((
         r"\s*([A-z 0-9]+)\. "
         r"([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})"
@@ -197,7 +195,7 @@ class Statistic(Parseable):
 
 
 class LifeTrack(Parseable):
-    """docstring for LifeTrack"""
+    """Parse LifeTrack events"""
     p = re.compile((
         r"\s*Life Track:\s*([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})"
         r"\s*---\s*(?=[^\s])(.+)")
@@ -222,7 +220,7 @@ class LifeTrack(Parseable):
 
 
 class HealthTrack(Parseable):
-    """docstring for HealthTrack"""
+    """Parse HealthTrack events"""
     p = re.compile((
         r"\s*Health Track:\s*([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})"
         r"\s*---\s*(?=[^\s])(.+)")
@@ -247,7 +245,7 @@ class HealthTrack(Parseable):
 
 
 class Task(Parseable):
-    """docstring for Task"""
+    """Add Tasks to OmniFocus"""
     p = re.compile(r'\s*!-\s*(?=[^\s])(.+)')
     multiline = True
 
@@ -283,7 +281,7 @@ class Task(Parseable):
 
 
 class Calendar(Parseable):
-    """docstring for Calendar"""
+    """Parse calendar events with Fantastical"""
     p = re.compile(r'\s*!@\s*(?=[^\s])(.+)')
 
     def __init__(self, string):

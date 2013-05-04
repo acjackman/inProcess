@@ -1,8 +1,8 @@
 {
-	"folders":
-	[
+	"folders": [
 		{
-			"path": "."
+			"path": ".",
+            "file_exclude_patterns": "*.sublime-workspace"
 		},
         {
             "path": "../../Active/DataLogs/",
@@ -13,5 +13,11 @@
             "file_include_patterns": ["*inx*", "inbox.md"],
             "folder_exclude_patterns": ["Connections"]
         }
-	]
+	],
+    "build_systems": [
+        {
+            "name": "run Tests",
+            "cmd": ["py.test"]
+        }
+    ]
 }
