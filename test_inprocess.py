@@ -338,11 +338,20 @@ class FunctionalBase:
     def run_inProcess(self):
         ip.main(settings_file=str(self.set_file.realpath()))
 
+    def inbox_exits(self, true=True):
+        if true:
+            assert self.inbox_file.check()
+        else:
+            assert not self.inbox_file.check()
+
+    def num_files_inbox(self, num):
+        assert len(self.inbox_dir.listdir()) == num
+
 
 class TestBasicFunctional(FunctionalBase):
     def test_create_inbox(self, tmpdir):
         self.create_env(tmpdir)
         self.create_inxfile('2013-05-03T16-21-33', 'test')
         self.run_inProcess()
-        assert len(self.inbox_dir.listdir()) == 0
-        assert self.inbox_file.check()
+        self.num_files_inbox(0)
+        self.inbox_exits()
