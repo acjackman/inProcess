@@ -355,3 +355,13 @@ class TestBasicFunctional(FunctionalBase):
         self.run_inProcess()
         self.num_files_inbox(0)
         self.inbox_exits()
+        # Check inbox contents
+        lines = self.inbox_file.read().splitlines()
+        assert lines[0] == '# Inbox'
+        # assert lines[1] == '`inbox.md` created May 03, 2013 17:23:12'  # need
+        # to stub out datetime.now to give a consistent date first
+        assert lines[2] == ''
+        assert lines[3] == '*' + ' *'*29
+        assert lines[4] == 'test'
+        assert lines[5] == ''
+        assert len(lines) == 6
