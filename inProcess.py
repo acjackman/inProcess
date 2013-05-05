@@ -383,7 +383,7 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
     # Setup output
     inbox_header = ("# Inbox\n`inbox.md` created " +
                     now.strftime('%B %d, %Y %H:%M:%S') +
-                    "\n\n*" + " *"*29 + "\n")
+                    "\n\n*" + " *"*29 + "\n\n")
     inbox_contents = ''
 
     # Loop through the list of files

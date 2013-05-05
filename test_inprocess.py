@@ -389,29 +389,28 @@ class TestBasicFunctional(FunctionalBase):
              1: '`inbox.md` created May 01, 2013 12:30:00',
              2: '',
              3: '*' + ' *'*29,
-             4: 'test',
-             5: ''})
-        self.check_inbox_length(6)
+             4: '',
+             5: 'test',
+             6: ''})
+        self.check_inbox_length(7)
 
     def test_read_inbox(self, tmpdir):
         self.create_env(tmpdir)
         # Check inbox remains the same
         self.create_inbox_file('Test')
         self.run_inProcess()
-        self.check_inbox_contents({4: 'Test'})
+        self.check_inbox_contents({5: 'Test'})
 
         self.create_inxfile(datetime(2013, 5, 3, 16, 21, 34), 'Test_2')
         self.run_inProcess()
-        self.check_inbox_contents({4: 'Test', 6: 'Test_2'})
+        self.check_inbox_contents({5: 'Test', 7: 'Test_2'})
 
     def test_multiple_files(self, tmpdir):
         self.create_env(tmpdir)
         self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), 'Test')
         self.create_inxfile(datetime(2013, 5, 3, 16, 21, 34), 'Test_2')
         self.run_inProcess()
-        lines = self.inbox_file.read().splitlines()
-        assert lines[4] == 'Test'
-        assert lines[6] == 'Test_2'
+        self.check_inbox_contents({5: 'Test', 7: 'Test_2'})
 
     def test_HealthTrack_record_basic(self, tmpdir):
         self.create_env(tmpdir)
@@ -460,9 +459,7 @@ class TestBasicFunctional(FunctionalBase):
         self.create_env(tmpdir)
         self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), cnts)
         self.run_inProcess()
-        lines = self.inbox_file.read().splitlines()
-        assert lines[5] == ''
-        assert lines[7] == ''
+        self.check_inbox_contents({6: '', 8: ''})
 
     def test_incomplete_multiline(self, tmpdir):
         self.create_env(tmpdir)
@@ -471,11 +468,5 @@ class TestBasicFunctional(FunctionalBase):
         self.create_inxfile(datetime(2013, 5, 3, 16, 21, 34),
                             'Test. 2013-05-04T21:03:25')
         self.run_inProcess()
-        lines = self.inbox_file.read().splitlines()
-        assert lines[4] == 'Journal 2013-05-04T20:49:02'
+        self.check_inbox_contents({5: 'Journal 2013-05-04T20:49:02'})
         assert self.data_dir.join('Test.csv').check()
-
-    def test_testing_inbox(self, tmpdir):
-        self.create_env(tmpdir)
-        self.create_inbox_file('Test')
-        self.check_inbox_contents({5: 'Test', 0: '# Inbox'})
