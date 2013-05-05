@@ -421,6 +421,15 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
         inbox_contents = inbox_contents + '\n\n'
         # Move the file to storage
         shutil.move(file, new_files[f_index])
+
+    # Log inProcess run
+    try:
+        with open(settings['data_dir'] + 'log_inProcess.csv', 'ab') as csvfile:
+            spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+            spamwriter.writerow([now])
+    except IOError:
+        raise RecordError('Problem writing to inProcess log')
+
     # Write inbox contents to file
     inbox_contents = re.sub(r'\n\s+\n', '\n\n', inbox_contents)  # Change inbox
     if re.sub('\n', '', inbox_contents) != '':

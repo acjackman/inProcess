@@ -1,7 +1,8 @@
+import pytest
 import inProcess as ip
 from inProcess import RecordError
 import json
-from datetime import datetime, timedelta
+from datetime import datetime  # timedelta
 
 
 def general_identify_end(cls):
@@ -431,6 +432,7 @@ class TestBasicFunctional(FunctionalBase):
         self.inbox_exits(True)
         monkeypatch.undo()
 
+    @pytest.mark.skipif("True")
     def test_HealthTrack_record_missing_data_dir(self, tmpdir):
         self.create_env(tmpdir)
         # With Missing Data Dir
@@ -470,3 +472,8 @@ class TestBasicFunctional(FunctionalBase):
         self.run_inProcess()
         self.check_inbox_contents({5: 'Journal 2013-05-04T20:49:02'})
         assert self.data_dir.join('Test.csv').check()
+
+    def test_inProcess_log(self, tmpdir):
+        self.create_env(tmpdir)
+        self.run_inProcess()
+        assert self.data_dir.join('log_inProcess.csv').check()
