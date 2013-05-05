@@ -366,8 +366,7 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
         sys.exit(0)
 
     # List parseable things
-    parseables = [Statistic, Task, Food, Calendar, Journal,
-                  LifeTrack, HealthTrack, CMD, Inbox]
+    parseables = Parseable.__subclasses__()  # list all direct subclasses of Parseable
 
     # Grab the list of inx files from the inbox directory, plus the inbox file
     files = os.listdir(settings['inbox_dir'])
