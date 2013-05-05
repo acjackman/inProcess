@@ -52,7 +52,7 @@ class Inbox(Parseable):
     p = re.compile(r"# Inbox")
     multiline = True
 
-    def __init__(self):
+    def __init__(self, lines):
         super(Inbox, self).__init__()
 
     def record(self):
@@ -256,7 +256,6 @@ class HealthTrack(Parseable):
 
     def record(self):
         data_dir = self.settings['data_dir']
-        print data_dir
         try:
             with open(data_dir + 'HealthTrack.csv', 'ab') as csvfile:
                 spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)

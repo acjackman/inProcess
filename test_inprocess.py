@@ -9,6 +9,8 @@ def general_identify_end(cls):
     assert cls.identify_end('* * * * *')
     assert cls.identify_end('- - - - -')
 
+    assert cls.identify_end('*' + ' *'*29)
+
     # Can have leading or trailing whitespace
     assert cls.identify_end(' - - - - -')   # Leading
     assert cls.identify_end('  - - - - -')   # Leading
@@ -332,6 +334,12 @@ class FunctionalBase:
         }
         self.set_file.write(json.dumps(tmp_settings))
 
+    def create_inbox_file(self, contents, created=datetime(2013, 5, 1, 8, 0, 0)):
+        contents = ("# Inbox\n`inbox.md` created " +
+                    created.strftime('%B %d, %Y %H:%M:%S') +
+                    "\n\n\n*" + " *"*5 + "\n" + contents)
+        self.inbox_file.write(contents)
+
     def create_inxfile(self, date, contents, ext='md'):
         inx = self.inbox_dir.join("inx " + date + '.' + ext)
         inx.write(contents)
@@ -376,6 +384,20 @@ class TestBasicFunctional(FunctionalBase):
         assert lines[5] == ''
         assert len(lines) == 6
 
+    def test_read_inbox(self, tmpdir):
+        self.create_env(tmpdir)
+        # Create Inbox
+        self.create_inbox_file('Test')
+        self.run_inProcess()
+
+        lines = self.inbox_file.read().splitlines()
+        assert lines[4] == 'Test'
+        self.create_inxfile('2013-05-03T16-21-34', 'Test2')
+        self.run_inProcess()
+        lines = self.inbox_file.read().splitlines()
+        assert lines[4] == 'Test'
+        assert lines[6] == 'Test2'
+
     def test_HealthTrack_record_basic(self, tmpdir):
         self.create_env(tmpdir)
         # Check that HealthTrack records properly, with no inbox
@@ -388,7 +410,6 @@ class TestBasicFunctional(FunctionalBase):
         self.create_env(tmpdir)
 
         def mock_record(self):
-            print 'Found'
             raise RecordError('Unknown error')
         monkeypatch.setattr(ip.HealthTrack, 'record', mock_record)
         self.create_inxfile('2013-05-03T16-21-33', 'Health Track: 2013-05-03T20:24:20 --- Test')
