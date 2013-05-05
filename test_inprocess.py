@@ -1,7 +1,7 @@
 import inProcess as ip
 from inProcess import RecordError
 import json
-from datetime import datetime  # timedelta
+from datetime import datetime, timedelta
 
 
 def general_identify_end(cls):
@@ -341,7 +341,7 @@ class FunctionalBase:
         self.inbox_file.write(contents)
 
     def create_inxfile(self, date, contents, ext='md'):
-        inx = self.inbox_dir.join("inx " + date + '.' + ext)
+        inx = self.inbox_dir.join("inx " + date.strftime('%Y-%m-%dT%H-%M-%S') + '.' + ext)
         inx.write(contents)
 
     def run_inProcess(self):
@@ -363,7 +363,7 @@ class FunctionalBase:
 class TestBasicFunctional(FunctionalBase):
     def test_create_inbox(self, tmpdir, monkeypatch):
         self.create_env(tmpdir)
-        self.create_inxfile('2013-05-03T16-21-33', 'test')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), 'test')
 
         def mock_now():
             return datetime(2013, 5, 1, 12, 30, 0, 0)
@@ -392,16 +392,25 @@ class TestBasicFunctional(FunctionalBase):
 
         lines = self.inbox_file.read().splitlines()
         assert lines[4] == 'Test'
-        self.create_inxfile('2013-05-03T16-21-34', 'Test2')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 34), 'Test_2')
         self.run_inProcess()
         lines = self.inbox_file.read().splitlines()
         assert lines[4] == 'Test'
-        assert lines[6] == 'Test2'
+        assert lines[6] == 'Test_2'
+
+    def test_multiple_files(self, tmpdir):
+        self.create_env(tmpdir)
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), 'Test')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 34), 'Test_2')
+        self.run_inProcess()
+        lines = self.inbox_file.read().splitlines()
+        assert lines[4] == 'Test'
+        assert lines[6] == 'Test_2'
 
     def test_HealthTrack_record_basic(self, tmpdir):
         self.create_env(tmpdir)
         # Check that HealthTrack records properly, with no inbox
-        self.create_inxfile('2013-05-03T16-21-33', 'Health Track: 2013-05-03T20:24:20 --- Test')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), 'Health Track: 2013-05-03T20:24:20 --- Test')
         self.run_inProcess()
         self.inbox_exits(False)
         assert self.data_dir.join('HealthTrack.csv').check()
@@ -412,7 +421,7 @@ class TestBasicFunctional(FunctionalBase):
         def mock_record(self):
             raise RecordError('Unknown error')
         monkeypatch.setattr(ip.HealthTrack, 'record', mock_record)
-        self.create_inxfile('2013-05-03T16-21-33', 'Health Track: 2013-05-03T20:24:20 --- Test')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), 'Health Track: 2013-05-03T20:24:20 --- Test')
         self.run_inProcess()
         self.inbox_exits(True)
         monkeypatch.undo()
@@ -421,18 +430,18 @@ class TestBasicFunctional(FunctionalBase):
         self.create_env(tmpdir)
         # With Missing Data Dir
         self.data_dir.remove()
-        self.create_inxfile('2013-05-03T16-21-34', 'Health Track: 2013-05-03T21:05:47 --- Test')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), 'Health Track: 2013-05-03T21:05:47 --- Test')
         self.run_inProcess()
         assert not self.data_dir.check()
         self.inbox_exits()
 
     def test_no_empty_inbox(self, tmpdir):
         self.create_env(tmpdir)
-        self.create_inxfile('2013-05-03T16-21-33', '')
-        self.create_inxfile('2013-05-03T16-21-33', ' ')
-        self.create_inxfile('2013-05-03T16-21-33', '\n\n\n')
-        self.create_inxfile('2013-05-03T16-21-33', '\n  \n \n')
-        self.create_inxfile('2013-05-03T16-21-33', '\n\t \t \n \n')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), '')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), ' ')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), '\n\n\n')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), '\n  \n \n')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), '\n\t \t \n \n')
         self.run_inProcess()
         self.inbox_exits(true=False)
 
@@ -443,7 +452,7 @@ class TestBasicFunctional(FunctionalBase):
                 '\t\n'
                 'but there should be three distinct paragraphs\n')
         self.create_env(tmpdir)
-        self.create_inxfile('2013-05-03T16-21-33', cnts)
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33), cnts)
         self.run_inProcess()
         lines = self.inbox_file.read().splitlines()
         assert lines[5] == ''
