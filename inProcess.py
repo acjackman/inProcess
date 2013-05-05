@@ -351,7 +351,8 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
     # Set Variables
     if options.settings_file is not None:
         settings_file = options.settings_file
-    settings = json.loads(open(expanduser(settings_file), 'rb').read())
+    with open(expanduser(settings_file), 'rb') as f:
+        settings = json.loads(f.read())
     Parseable.settings = settings  # Pass along settings to the Parseable Class
 
     if options.location or opt_location:
@@ -433,10 +434,10 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
     # Write inbox contents to file
     inbox_contents = re.sub(r'\n\s+\n', '\n\n', inbox_contents)  # Change inbox
     if re.sub('\n', '', inbox_contents) != '':
-        f = open(settings['inbox_file'], 'wb')
         inbox_contents = inbox_header + inbox_contents
         inbox_contents = re.sub(r"\s*\n\s*\n\s*\n+", r"\n\n", inbox_contents)
-        f.write(inbox_contents)
+        with open(settings['inbox_file'], 'wb') as f:
+            f.write(inbox_contents)
 
 if __name__ == '__main__':
     main()
