@@ -457,3 +457,14 @@ class TestBasicFunctional(FunctionalBase):
         lines = self.inbox_file.read().splitlines()
         assert lines[5] == ''
         assert lines[7] == ''
+
+    def test_incomplete_multiline(self, tmpdir):
+        self.create_env(tmpdir)
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 33),
+                            'Journal 2013-05-04T20:49:02')
+        self.create_inxfile(datetime(2013, 5, 3, 16, 21, 34),
+                            'Test. 2013-05-04T21:03:25')
+        self.run_inProcess()
+        lines = self.inbox_file.read().splitlines()
+        assert lines[4] == 'Journal 2013-05-04T20:49:02'
+        assert self.data_dir.join('Test.csv').check()

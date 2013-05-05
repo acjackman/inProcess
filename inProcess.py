@@ -388,29 +388,34 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
 
     # Loop through the list of files
     for f_index, file in enumerate(old_files):
-        f = open(file, 'rb')
-        line = f.readline()
-        while line != '':
-            for ident in parseables:
-                if ident.identify(line):
-                    if ident.multiline:
-                        lines = []
-                        while ident.identify_end(line) is None:
-                            lines = lines + [line]
-                            line = f.readline()
-                        try:
-                            ident(lines).record()
-                        except:
-                            inbox_contents = inbox_contents + ''.join(lines)
-                    else:
-                        try:
-                            ident(line).record()
-                        except:
-                            inbox_contents = inbox_contents + line
-                    break
-            else:  # Runs if we don't know how to parse the current line
-                inbox_contents = inbox_contents + line
+        with open(file, 'rb') as f:
             line = f.readline()
+            while line != '':
+                for ident in parseables:
+                    if ident.identify(line):
+                        if ident.multiline:
+                            lines = []
+                            record = True
+                            while ident.identify_end(line) is None:
+                                lines = lines + [line]
+                                line = f.readline()
+                                if line == '':
+                                    inbox_contents = inbox_contents + ''.join(lines)
+                                    break
+                            if record:
+                                try:
+                                    ident(lines).record()
+                                except:
+                                    inbox_contents = inbox_contents + ''.join(lines)
+                        else:
+                            try:
+                                ident(line).record()
+                            except:
+                                inbox_contents = inbox_contents + line
+                        break
+                else:  # Runs if we don't know how to parse the current line
+                    inbox_contents = inbox_contents + line
+                line = f.readline()
         # After File has been processed:
         # Add blank line to remaining contents
         inbox_contents = inbox_contents + '\n\n'
