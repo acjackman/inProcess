@@ -354,17 +354,15 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
         settings_file = options.settings_file
     settings = json.loads(open(expanduser(settings_file), 'rb').read())
     Parseable.settings = settings  # Pass along settings to the Parseable Class
-    inbox_dir = settings['inbox_dir']
-    inbox_file = settings['inbox_file']
-    storage_dir = settings['storage_dir']
 
     if options.location or opt_location:
         print('Storage Locations:\n'
               'Settings:    %s\n'
               'Inbox:       %s\n'
               'inx files:   %s\n'
-              'inx storage: %s') % (settings_file, inbox_file, inbox_dir,
-                                    storage_dir)
+              'inx storage: %s') % (settings_file, settings['inbox_file'],
+                                    settings['inbox_dir'],
+                                    settings['storage_dir'])
         sys.exit(0)
 
     # List parseable things
@@ -372,16 +370,16 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
                   LifeTrack, HealthTrack, CMD, Inbox]
 
     # Grab the list of inx files from the inbox directory, plus the inbox file
-    files = os.listdir(inbox_dir)
+    files = os.listdir(settings['inbox_dir'])
     fp = re.compile(
         r"inx [0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}")
     files = filter(lambda file: fp.match(file), files)
-    old_files = [inbox_dir + file for file in files]
-    new_files = [storage_dir + file for file in files]
+    old_files = [settings['inbox_dir'] + file for file in files]
+    new_files = [settings['storage_dir'] + file for file in files]
     now = get_now()
-    if os.path.exists(inbox_file):
-        inbox_store = storage_dir + "inbox " + now.strftime('%Y-%m-%dT%H-%M-%S') + ".md"
-        old_files = [inbox_file] + old_files
+    if os.path.exists(settings['inbox_file']):
+        inbox_store = settings['storage_dir'] + "inbox " + now.strftime('%Y-%m-%dT%H-%M-%S') + ".md"
+        old_files = [settings['inbox_file']] + old_files
         new_files = [inbox_store] + new_files
 
     # Setup output
@@ -423,7 +421,7 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
     # Write inbox contents to file
     inbox_contents = re.sub(r'\n\s+\n', '\n\n', inbox_contents)  # Change inbox
     if re.sub('\n', '', inbox_contents) != '':
-        f = open(inbox_file, 'wb')
+        f = open(settings['inbox_file'], 'wb')
         inbox_contents = inbox_header + inbox_contents
         inbox_contents = re.sub(r"\s*\n\s*\n\s*\n+", r"\n\n", inbox_contents)
         f.write(inbox_contents)
