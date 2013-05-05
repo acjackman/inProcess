@@ -359,6 +359,15 @@ class FunctionalBase:
     def num_files_storage(self, num):
         assert len(self.storage_dir.listdir()) == num
 
+    def check_inbox_contents(self, values):
+        lines = self.inbox_file.read().splitlines()
+        for line_num, line in values.iteritems():
+            assert lines[line_num] == line
+
+    def check_inbox_length(self, num_lines):
+        lines = self.inbox_file.read().splitlines()
+        assert len(lines) == num_lines
+
 
 class TestBasicFunctional(FunctionalBase):
     def test_create_inbox(self, tmpdir, monkeypatch):
@@ -375,28 +384,25 @@ class TestBasicFunctional(FunctionalBase):
         self.num_files_storage(1)
         self.inbox_exits()
         # Check inbox contents
-        lines = self.inbox_file.read().splitlines()
-        assert lines[0] == '# Inbox'
-        assert lines[1] == '`inbox.md` created May 01, 2013 12:30:00'
-        assert lines[2] == ''
-        assert lines[3] == '*' + ' *'*29
-        assert lines[4] == 'test'
-        assert lines[5] == ''
-        assert len(lines) == 6
+        self.check_inbox_contents(
+            {0: '# Inbox',
+             1: '`inbox.md` created May 01, 2013 12:30:00',
+             2: '',
+             3: '*' + ' *'*29,
+             4: 'test',
+             5: ''})
+        self.check_inbox_length(6)
 
     def test_read_inbox(self, tmpdir):
         self.create_env(tmpdir)
-        # Create Inbox
+        # Check inbox remains the same
         self.create_inbox_file('Test')
         self.run_inProcess()
+        self.check_inbox_contents({4: 'Test'})
 
-        lines = self.inbox_file.read().splitlines()
-        assert lines[4] == 'Test'
         self.create_inxfile(datetime(2013, 5, 3, 16, 21, 34), 'Test_2')
         self.run_inProcess()
-        lines = self.inbox_file.read().splitlines()
-        assert lines[4] == 'Test'
-        assert lines[6] == 'Test_2'
+        self.check_inbox_contents({4: 'Test', 6: 'Test_2'})
 
     def test_multiple_files(self, tmpdir):
         self.create_env(tmpdir)
@@ -468,3 +474,8 @@ class TestBasicFunctional(FunctionalBase):
         lines = self.inbox_file.read().splitlines()
         assert lines[4] == 'Journal 2013-05-04T20:49:02'
         assert self.data_dir.join('Test.csv').check()
+
+    def test_testing_inbox(self, tmpdir):
+        self.create_env(tmpdir)
+        self.create_inbox_file('Test')
+        self.check_inbox_contents({5: 'Test', 0: '# Inbox'})
