@@ -245,6 +245,7 @@ class TestRecommendMovie:
             year='1234',
             recBy='Everyone and their Brother')
 
+
 class TestRecommendBook:
     def test_RecommendBook_identify(self):
         assert ip.ReccomendBook.identify('Book: Age of Ultron')
@@ -270,6 +271,24 @@ class TestRecommendBook:
             year='1234',
             publisher='Random Place')
 
+
+class TestRecommendArtist:
+    def test_RecommendArtist_identify(self):
+        assert ip.ReccomendArtist.identify('Artist: Popular')
+        assert ip.ReccomendArtist.identify('Artist: Popular10')
+        assert ip.ReccomendArtist.identify(' Artist: Popular 10')
+        assert ip.ReccomendArtist.identify(' Artist: Popular 12    ')
+        assert not ip.ReccomendArtist.identify('Artist. good guys')
+
+    def test_ReccomendArtist_initialize(self):
+        def s_check(string, name=''):
+            rm = ip.ReccomendArtist(string)
+            assert rm.name == name
+
+        s_check('Artist: Artist 1', name='Artist 1')
+        s_check('Artist: Artist 1 ', name='Artist 1')
+        s_check('Artist:Artist 1 ', name='Artist 1')
+        s_check('Artist:  Artist 1  ', name='Artist 1')
 
 
 class TestLifeTrack:
