@@ -214,10 +214,13 @@ class TestStatistic:
 class TestRecommendMovie:
     def test_RecommendMovie_identify(self):
         assert ip.ReccomendMovie.identify('Movie: Age of Ultron')
+        assert ip.ReccomendMovie.identify(' Movie: Age of Ultron')
+        assert ip.ReccomendMovie.identify(' Movie: Age of Ultron w/ Captain America')
+        assert ip.ReccomendMovie.identify(' Movie: Age of Ultron w/ Captain America (2015)    ')
         assert not ip.ReccomendMovie.identify('Movie. 2013-05-02T14:18:26')
 
     def test_ReccomendMovie_initialize(self):
-        def s_check(string, title=None, director=None, actors=[], year=None, recBy=None):
+        def s_check(string, title='', director='', actors=[], year='', recBy=''):
             rm = ip.ReccomendMovie(string)
             print rm
             assert rm.title == title
@@ -227,8 +230,21 @@ class TestRecommendMovie:
             assert rm.year == year
             assert rm.recBy == recBy
 
-
         s_check('Movie: Age of Ultron', 'Age of Ultron')
+        s_check('Movie: ~ Joss Weadon', director='Joss Weadon')
+        s_check('Movie: (1234)', year='1234')
+        s_check('Movie: w/ Captain America', actors=['Captain America'])
+        s_check('Movie: w/Captain America', actors=['Captain America'])
+        s_check('Movie: w/Captain America ', actors=['Captain America'])
+        s_check('Movie: w/ Captain America w/ Thor', actors=['Captain America', 'Thor'])
+        s_check('Movie: b/ Everyone and their Brother', recBy='Everyone and their Brother')
+        s_check('Movie: Age of Ultron ~ Joss Weadon (1234) w/ Captain America w/ Thor b/ Everyone and their Brother', 
+            title='Age of Ultron',
+            director='Joss Weadon',
+            actors=['Captain America', 'Thor'],
+            year='1234',
+            recBy='Everyone and their Brother')
+
 
 
 class TestLifeTrack:

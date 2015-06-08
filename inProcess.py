@@ -216,8 +216,6 @@ class ReccomendMovie(Parseable):
     """Reccomended Movie"""
     p = re.compile(r"^\s*Movie:.*")
     
-
-
     def __init__(self, string):
         super(ReccomendMovie, self).__init__()
         movSymbols = r"(:|~|w/|\(|b/)"
@@ -231,11 +229,11 @@ class ReccomendMovie(Parseable):
 
         items = zip(keys,values)
 
-        self.title = None
-        self.director = None
+        self.title = ''
+        self.director = ''
         self.actors = list()
-        self.year=None
-        self.recBy=None
+        self.year=''
+        self.recBy=''
         for i in items:
             if i[0] == ':':
                 self.title = i[1]
@@ -247,7 +245,6 @@ class ReccomendMovie(Parseable):
                 self.year = re.sub(r"\)", r"", i[1])
             elif i[0] == 'b/':
                 self.recBy = i[1]
-
 
     def record(self):
         data_dir = self.settings['data_dir']
@@ -263,7 +260,6 @@ class ReccomendMovie(Parseable):
     @classmethod
     def identify(cls, string):
         return cls.p.match(string)
-
 
 class LifeTrack(Parseable):
     """Parse LifeTrack events"""
