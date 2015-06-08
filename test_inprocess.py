@@ -305,6 +305,8 @@ class TestRecommendAlbum:
         def s_check(string, title='', artist='', year=''):
             rm = ip.ReccomendAlbum(string)
             assert rm.title == title
+            assert rm.artist == artist
+            assert rm.year == year
 
         # Test Album title
         s_check('Album: Album 1', title='Album 1')
@@ -313,7 +315,7 @@ class TestRecommendAlbum:
         s_check('Album:  Album 1  ', title='Album 1')
 
         # Album title and artist
-        s_check('Album: Album 1 ~ Cool Kids', title='Album 1', artist='Cool Kids')
+        s_check('Album: Album 1  ~ Cool Kids', title='Album 1', artist='Cool Kids')
         s_check('Album:  Album 1  ~  Cool Kids   ', title='Album 1', artist='Cool Kids')
 
         # Album title, artist, and year
