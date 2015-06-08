@@ -291,6 +291,36 @@ class TestRecommendArtist:
         s_check('Artist:  Artist 1  ', name='Artist 1')
 
 
+class TestRecommendAlbum:
+    def test_RecommendAlbum_identify(self):
+        assert ip.ReccomendAlbum.identify('Album: Popular ')
+        assert ip.ReccomendAlbum.identify('Album: Popular10')
+        assert ip.ReccomendAlbum.identify(' Album: Popular 10')
+        assert ip.ReccomendAlbum.identify(' Album: Popular 12    ')
+        assert ip.ReccomendAlbum.identify(' Album: Popular 12 ~ Cool Kids  ')
+        assert not ip.ReccomendAlbum.identify('Album. good guys')
+        assert not ip.ReccomendAlbum.identify('Album. good guys. Cool Kids')
+
+    def test_ReccomendAlbum_initialize(self):
+        def s_check(string, title='', artist='', year=''):
+            rm = ip.ReccomendAlbum(string)
+            assert rm.title == title
+
+        # Test Album title
+        s_check('Album: Album 1', title='Album 1')
+        s_check('Album: Album 1 ', title='Album 1')
+        s_check('Album:Album 1 ', title='Album 1')
+        s_check('Album:  Album 1  ', title='Album 1')
+
+        # Album title and artist
+        s_check('Album: Album 1 ~ Cool Kids', title='Album 1', artist='Cool Kids')
+        s_check('Album:  Album 1  ~  Cool Kids   ', title='Album 1', artist='Cool Kids')
+
+        # Album title, artist, and year
+        s_check('Album: Album 1 ~ Cool Kids (1234)', title='Album 1', artist='Cool Kids', year='1234')
+        s_check('Album: Album 1 ~  Cool Kids  (1234)   ', title='Album 1', artist='Cool Kids', year='1234')
+
+
 class TestLifeTrack:
     def test_LifeTrack_identify(self):
         assert ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26 --- Event')
