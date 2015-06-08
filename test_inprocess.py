@@ -245,6 +245,31 @@ class TestRecommendMovie:
             year='1234',
             recBy='Everyone and their Brother')
 
+class TestRecommendBook:
+    def test_RecommendBook_identify(self):
+        assert ip.ReccomendBook.identify('Book: Age of Ultron')
+        assert ip.ReccomendBook.identify(' Book: Age of Ultron')
+        assert ip.ReccomendBook.identify(' Book: Age of Ultron w/ Captain America')
+        assert ip.ReccomendBook.identify(' Book: Age of Ultron w/ Captain America (2015)    ')
+        assert not ip.ReccomendBook.identify('Book. 2013-05-02T14:18:26')
+
+    def test_ReccomendBook_initialize(self):
+        def s_check(string, title='', author='', publisher='', year=''):
+            rm = ip.ReccomendBook(string)
+            assert rm.title == title
+            assert rm.author == author
+            assert rm.publisher == publisher
+            assert rm.year == year
+
+        s_check('Book: Book 1', title='Book 1')
+        s_check('Book: Book 1 p/ Random Place', title='Book 1', publisher='Random Place')
+    
+        s_check('Book: Book 1 ~ Moroni (1234) p/ Random Place', 
+            title='Book 1',
+            author='Moroni',
+            year='1234',
+            publisher='Random Place')
+
 
 
 class TestLifeTrack:
