@@ -211,6 +211,26 @@ class TestStatistic:
                 '2013-05-02T19:51:41', extras=['Author', 'Title', '230'])
 
 
+class TestRecommendMovie:
+    def test_RecommendMovie_identify(self):
+        assert ip.ReccomendMovie.identify('Movie: Age of Ultron')
+        assert not ip.ReccomendMovie.identify('Movie. 2013-05-02T14:18:26')
+
+    def test_ReccomendMovie_initialize(self):
+        def s_check(string, title=None, director=None, actors=[], year=None, recBy=None):
+            rm = ip.ReccomendMovie(string)
+            print rm
+            assert rm.title == title
+            assert rm.director == director
+            assert rm.actors == actors
+            assert rm.year == year
+            assert rm.year == year
+            assert rm.recBy == recBy
+
+
+        s_check('Movie: Age of Ultron', 'Age of Ultron')
+
+
 class TestLifeTrack:
     def test_LifeTrack_identify(self):
         assert ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26 --- Event')
