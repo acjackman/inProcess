@@ -381,6 +381,52 @@ class TestRecommendAuthor:
         s_check('Author:  Author 1  ', name='Author 1')
 
 
+class TestRecommendApp:
+    def test_RecommendApp_identify(self):
+        assert ip.ReccomendApp.identify('App: Popular')
+        assert ip.ReccomendApp.identify('App: Popular10')
+        assert ip.ReccomendApp.identify(' App: Popular 10')
+        assert ip.ReccomendApp.identify(' App: Popular 12    ')
+        assert not ip.ReccomendApp.identify('App. good guys')
+
+    def test_ReccomendApp_initialize(self):
+        def s_check(string, name='', developer='', platform=''):
+            rm = ip.ReccomendApp(string)
+            assert rm.name == name
+            assert rm.developer == developer
+            assert rm.platform == platform
+
+        s_check('App: App 1', name='App 1')
+        s_check('App: App 1 ', name='App 1')
+        s_check('App:App 1 ', name='App 1')
+        s_check('App:  App 1  ', name='App 1')
+        s_check('App:  App 1  ~ GreatGeek', name='App 1', developer='GreatGeek')
+        s_check('App: App 1  ~ GreatGeek f/ iOS', name='App 1', developer='GreatGeek', platform='iOS')
+
+
+class TestRecommendGame:
+    def test_RecommendGame_identify(self):
+        assert ip.ReccomendGame.identify('Game: Popular')
+        assert ip.ReccomendGame.identify('Game: Popular10')
+        assert ip.ReccomendGame.identify(' Game: Popular 10')
+        assert ip.ReccomendGame.identify(' Game: Popular 12    ')
+        assert not ip.ReccomendGame.identify('Game. good guys')
+
+    def test_ReccomendGame_initialize(self):
+        def s_check(string, name='', publisher='', genre=''):
+            rm = ip.ReccomendGame(string)
+            assert rm.name == name
+            assert rm.publisher == publisher
+            assert rm.genre == genre
+
+        s_check('Game: Game 1', name='Game 1')
+        s_check('Game: Game 1 ', name='Game 1')
+        s_check('Game:Game 1 ', name='Game 1')
+        s_check('Game:  Game 1  ', name='Game 1')
+        s_check('Game:  Game 1  ~ GreatGeek', name='Game 1', publisher='GreatGeek')
+        s_check('Game: Game 1  ~ GreatGeek g/ puzzle', name='Game 1', publisher='GreatGeek', genre='puzzle')
+
+
 class TestLifeTrack:
     def test_LifeTrack_identify(self):
         assert ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26 --- Event')

@@ -19,3 +19,5 @@ Make Stack Process Function: @done(2013-04-07)
 Add Food Log to Processing: @done
 	- check multiple line processing from task @done(2013-01-04)
 	- write regex @done(2013-01-04)
+
+- Add Tests for file write for each "Recommend" data type
