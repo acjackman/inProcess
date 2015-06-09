@@ -362,6 +362,25 @@ class TestRecommendSong:
         )
         
 
+class TestRecommendAuthor:
+    def test_RecommendAuthor_identify(self):
+        assert ip.ReccomendAuthor.identify('Author: Popular')
+        assert ip.ReccomendAuthor.identify('Author: Popular10')
+        assert ip.ReccomendAuthor.identify(' Author: Popular 10')
+        assert ip.ReccomendAuthor.identify(' Author: Popular 12    ')
+        assert not ip.ReccomendAuthor.identify('Author. good guys')
+
+    def test_ReccomendAuthor_initialize(self):
+        def s_check(string, name=''):
+            rm = ip.ReccomendAuthor(string)
+            assert rm.name == name
+
+        s_check('Author: Author 1', name='Author 1')
+        s_check('Author: Author 1 ', name='Author 1')
+        s_check('Author:Author 1 ', name='Author 1')
+        s_check('Author:  Author 1  ', name='Author 1')
+
+
 class TestLifeTrack:
     def test_LifeTrack_identify(self):
         assert ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26 --- Event')
