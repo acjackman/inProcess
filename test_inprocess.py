@@ -323,6 +323,45 @@ class TestRecommendAlbum:
         s_check('Album: Album 1 ~  Cool Kids  (1234)   ', title='Album 1', artist='Cool Kids', year='1234')
 
 
+class TestRecommendSong:
+    def test_RecommendSong_identify(self):
+        assert ip.ReccomendSong.identify('Song: Popular ')
+        assert ip.ReccomendSong.identify('Song: Popular10')
+        assert ip.ReccomendSong.identify(' Song: Popular 10')
+        assert ip.ReccomendSong.identify(' Song: Popular 12    ')
+        assert ip.ReccomendSong.identify(' Song: Popular 12 ~ Cool Kids  ')
+        assert ip.ReccomendSong.identify(' Song: Popular 12 ~ Cool Kids "Cool Kids in the house"  ')
+        assert not ip.ReccomendSong.identify('Song. good guys')
+        assert not ip.ReccomendSong.identify('Song. good guys. Cool Kids')
+
+    def test_ReccomendSong_initialize(self):
+        def s_check(string, title='', artist='', album='', year='', lyrics=''):
+            rm = ip.ReccomendSong(string)
+            assert rm.title == title
+            assert rm.artist == artist
+            assert rm.album == album
+            assert rm.lyrics == lyrics
+            assert rm.year == year
+
+        s_check('Song: Real Story', title='Real Story')
+        s_check('Song: Real Story ~ Cool Kids', title='Real Story', artist='Cool Kids')
+        s_check('Song: Real Story a/ The Hits', title='Real Story', album='The Hits')
+        s_check('Song: Real Story l/ Awesome Songs Rock', title='Real Story', lyrics='Awesome Songs Rock')
+        s_check('Song:  l/ Awesome Songs Rock', lyrics='Awesome Songs Rock')
+        s_check('Song: Real Story a/ The Hits (1234)', title='Real Story', album='The Hits', year='1234')
+
+        s_check('Song: Real Story ~ Cool Kids a/ The Hits', title='Real Story', artist='Cool Kids', album='The Hits')
+        s_check('Song: Real Story ~ Cool Kids a/ The Hits (4030)', title='Real Story', artist='Cool Kids', album='The Hits', year='4030')
+
+        s_check('Song: Real Story ~ Cool Kids a/ The Hits (4030) l/ Awesomes Songs Rock', 
+            title='Real Story',
+            artist='Cool Kids',
+            album='The Hits',
+            year='4030',
+            lyrics='Awesomes Songs Rock'
+        )
+        
+
 class TestLifeTrack:
     def test_LifeTrack_identify(self):
         assert ip.LifeTrack.identify('Life Track: 2013-05-02T19:59:26 --- Event')
