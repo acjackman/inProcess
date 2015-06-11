@@ -297,7 +297,7 @@ class ReccomendBook(Parseable):
         try:
             with open(data_dir + 'ReccomendBook.csv', 'ab') as csvfile:
                 spamwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
-                spamwriter.writerow([self.title, self.director, self.year, self.publisher])
+                spamwriter.writerow([self.title, self.author, self.year, self.publisher])
         except IOError:
             raise RecordError('Problem writing to file')
         except:
