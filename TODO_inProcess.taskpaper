@@ -21,3 +21,5 @@ Add Food Log to Processing: @done
 	- write regex @done(2013-01-04)
 
 - Add Tests for file write for each "Recommend" data type
+
+- Fix URLtoSave to work with capital urls in the domain name

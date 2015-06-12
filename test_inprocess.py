@@ -529,6 +529,65 @@ class TestURLtoRead(object):
             URL='http://daringfireball.net/2015/02/apple_watch_pricing?arg1=%30',
             comments='My Personal Discription of this post')
 
+class TestURLtoSave(object):
+    def test_URL_toSave_identify(self):
+        assert ip.URLtoSave.identify('Save: http://lds.org --- Home of the Mormons')
+        assert ip.URLtoSave.identify('Save: http://lds.org --- Home of the Mormons')
+        assert ip.URLtoSave.identify('Save: http://lds.org --- Home of the Mormons #church')
+        assert ip.URLtoSave.identify('Save: http://lds.org --- Home of the Mormons #church r/')
+        assert ip.URLtoSave.identify('Save: http://lds.org --- Home of the Mormons #church p/')
+        assert ip.URLtoSave.identify('Save: http://lds.org --- Home of the Mormons #church p/ r/')
+        assert ip.URLtoSave.identify('Save: http://lds.org --- Home of the Mormons #church p/ r/ #coding')
+        assert ip.URLtoSave.identify('Save: lds.org --- Home of mormons')
+        assert ip.URLtoSave.identify('Save: http://LDSAAA.ORG --- Gospel Study Notebook section idea') #Check uppper case
+        assert ip.URLtoSave.identify('Save: http://www.Gospelstudyjournal.com --- Gospel Study Notebook section idea #church')
+        assert ip.URLtoSave.identify('Save: http://lds.org/A-Slug/ --- Home of the Mormons') #Dash in the file name
+        assert ip.URLtoSave.identify('Save: http://lds.org/A_Slug/ --- Home of the Mormons') #Dash in the file name
+        assert ip.URLtoSave.identify('Save: http://lds.org/A%30-Slug/ --- Home of the Mormons') #percent in the file name
+        assert ip.URLtoSave.identify('Save: http://www.ergoprise.com/ultraergo-wireless-rf-split-keyboard/ --- Split Keyboard') #percent in the file name
+
+    def test_URLtoSave_initialize(self):
+        def check(strings, url='', title='', shared='yes', toread='no', tags=['.AddinProcess'], multiline=False, extended=''):
+            rm = ip.URLtoSave(strings)
+            assert rm.payload['url'] == url
+            assert rm.payload['description'] == title
+            assert rm.payload['shared'] == shared
+            assert rm.payload['toread'] == toread
+            assert rm.tags == tags
+            if multiline:
+                assert rm.payload['extended'] == extended
+
+        check(['Save: http://lds.org --- Home of the Mormons'],
+            url='http://lds.org',
+            title='Home of the Mormons')
+        check(['Save: http://lds.org --- Home of the Mormons #church'],
+            url='http://lds.org',
+            title='Home of the Mormons',
+            tags=['.AddinProcess', 'church'])
+        check(['Save: http://lds.org --- Home of the Mormons #church r/'],
+            url='http://lds.org',
+            title='Home of the Mormons',
+            toread='yes',
+            tags=['.AddinProcess', 'church'])
+        check(['Save: http://lds.org --- Home of the Mormons #church p/'],
+            url='http://lds.org',
+            title='Home of the Mormons',
+            shared='no',
+            tags=['.AddinProcess', 'church'],
+            extended='')
+        check(['Save: http://lds.org --- Home of the Mormons #church p/ r/'],
+            url='http://lds.org',
+            title='Home of the Mormons',
+            shared='no',
+            toread='yes',
+            tags=['.AddinProcess', 'church'])
+        check(['Save: http://lds.org --- Home of the Mormons #church p/ r/ #coding'],
+            url='http://lds.org',
+            title='Home of the Mormons',
+            shared='no',
+            toread='yes',
+            tags=['.AddinProcess', 'coding', 'church'])
+
 
 class TestLifeTrack:
     def test_LifeTrack_identify(self):
