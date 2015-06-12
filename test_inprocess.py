@@ -426,6 +426,109 @@ class TestRecommendGame:
         s_check('Game:  Game 1  ~ GreatGeek', name='Game 1', publisher='GreatGeek')
         s_check('Game: Game 1  ~ GreatGeek g/ puzzle', name='Game 1', publisher='GreatGeek', genre='puzzle')
 
+class TestURLtoRead(object):
+    def test_URLtoRead_identify(self):
+        assert ip.URLtoRead.identify('Read: daringfireball.net/') # Regular
+        assert ip.URLtoRead.identify('Read:daringfireball.net/') # No whitespace
+        assert ip.URLtoRead.identify('Read:   daringfireball.net/') # Extra whitespace between identifer and url
+        assert ip.URLtoRead.identify('   Read:   daringfireball.net/') # Extra whitespace deosn't matter
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/') # http
+        assert ip.URLtoRead.identify('Read: https://daringfireball.net/') # https 
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/2015/02/apple_watch_pricing') # full url with article
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/2015/02/apple_watch_pricing.md') # full url with article, file extension
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo') # Single argument
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo&arg2=BooHooHoo') # Multiple arguments
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=%30')
+
+        # With Comments
+        assert ip.URLtoRead.identify('Read: daringfireball.net/ My Personal Discription of this post') # Regular
+        assert ip.URLtoRead.identify('Read:daringfireball.net/ My Personal Discription of this post') # No whitespace
+        assert ip.URLtoRead.identify('Read:   daringfireball.net/ My Personal Discription of this post') # Extra whitespace between identifer and url
+        assert ip.URLtoRead.identify('   Read:   daringfireball.net/ My Personal Discription of this post') # Extra whitespace deosn't matter
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/ My Personal Discription of this post') # http
+        assert ip.URLtoRead.identify('Read: https://daringfireball.net/ My Personal Discription of this post') # https 
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/2015/02/apple_watch_pricing My Personal Discription of this post') # full url with article
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/2015/02/apple_watch_pricing.md My Personal Discription of this post') # full url with article, file extension
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo My Personal Discription of this post') # Single argument
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo&arg2=BooHooHoo My Personal Discription of this post') # Multiple arguments
+        assert ip.URLtoRead.identify('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=%30 My Personal Discription of this post')
+        
+        assert not ip.URLtoRead.identify('Read http://daringfireball.net/2015/02/apple_watch_pricing') # Require Colon
+        assert not ip.URLtoRead.identify('* Read: http://daringfireball.net/2015/02/apple_watch_pricing') # part of a list
+
+    def test_URLtoRead_initialize(self):
+        def check(string, URL='', comments=''):
+            rm = ip.URLtoRead(string)
+            assert rm.URL == URL
+            assert rm.comments == comments
+
+        check('Read: daringfireball.net/',
+            URL='daringfireball.net/',
+            comments='') # Regular
+        check('Read:daringfireball.net',
+            URL='daringfireball.net',
+            comments='') # No whitespace
+        check('Read:   daringfireball.net/',
+            URL='daringfireball.net/',
+            comments='') # Extra whitespace between identifer and url
+        check('   Read:   daringfireball.net/',
+            URL='daringfireball.net/',
+            comments='') # Extra whitespace deosn't matter
+        check('Read: http://daringfireball.net/',
+            URL='http://daringfireball.net/',
+            comments='') # http
+        check('Read: https://daringfireball.net/',
+            URL='https://daringfireball.net/',
+            comments='') # https 
+        check('Read: http://daringfireball.net/2015/02/apple_watch_pricing',
+            URL='http://daringfireball.net/2015/02/apple_watch_pricing',
+            comments='') # full url with article
+        check('Read: http://daringfireball.net/2015/02/apple_watch_pricing.md',
+            URL='http://daringfireball.net/2015/02/apple_watch_pricing.md',
+            comments='') # full url with article, file extension
+        check('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo',
+            URL='http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo',
+            comments='') # Single argument
+        check('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo&arg2=BooHooHoo',
+            URL='http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo&arg2=BooHooHoo',
+            comments='') # Multiple arguments
+        check('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=%30',
+            URL='http://daringfireball.net/2015/02/apple_watch_pricing?arg1=%30',
+            comments='')
+        check('Read: daringfireball.net/ My Personal Discription of this post',
+            URL='daringfireball.net/',
+            comments='My Personal Discription of this post') # Regular
+        check('Read:daringfireball.net/ My Personal Discription of this post',
+            URL='daringfireball.net/',
+            comments='My Personal Discription of this post') # No whitespace
+        check('Read:   daringfireball.net/ My Personal Discription of this post',
+            URL='daringfireball.net/',
+            comments='My Personal Discription of this post') # Extra whitespace between identifer and url
+        check('   Read:   daringfireball.net/ My Personal Discription of this post',
+            URL='daringfireball.net/',
+            comments='My Personal Discription of this post') # Extra whitespace deosn't matter
+        check('Read: http://daringfireball.net/ My Personal Discription of this post',
+            URL='http://daringfireball.net/',
+            comments='My Personal Discription of this post') # http
+        check('Read: https://daringfireball.net/ My Personal Discription of this post',
+            URL='https://daringfireball.net/',
+            comments='My Personal Discription of this post') # https 
+        check('Read: http://daringfireball.net/2015/02/apple_watch_pricing My Personal Discription of this post',
+            URL='http://daringfireball.net/2015/02/apple_watch_pricing',
+            comments='My Personal Discription of this post') # full url with article
+        check('Read: http://daringfireball.net/2015/02/apple_watch_pricing.md My Personal Discription of this post',
+            URL='http://daringfireball.net/2015/02/apple_watch_pricing.md',
+            comments='My Personal Discription of this post') # full url with articl, file extension
+        check('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo My Personal Discription of this post',
+            URL='http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo',
+            comments='My Personal Discription of this post') # Single argument
+        check('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo&arg2=BooHooHoo My Personal Discription of this post',
+            URL='http://daringfireball.net/2015/02/apple_watch_pricing?arg1=Boohoo&arg2=BooHooHoo',
+            comments='My Personal Discription of this post') # Multiple arguments
+        check('Read: http://daringfireball.net/2015/02/apple_watch_pricing?arg1=%30 My Personal Discription of this post',
+            URL='http://daringfireball.net/2015/02/apple_watch_pricing?arg1=%30',
+            comments='My Personal Discription of this post')
+
 
 class TestLifeTrack:
     def test_LifeTrack_identify(self):
