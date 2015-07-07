@@ -62,3 +62,8 @@ The script is written against Python 2.7, and is the only requirement for the ba
 * Tasks are recorded in OmniFocus using Brett Terbstra's `otask` script
 * Journal Entries are recorded using Day One's CLI interface
 * Calendar events are parsed and recorded via Fantastical's AppleScript interface
+
+# License
+inProcess by Adam Jackman (copyright 2015), is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License][license].
+
+[license]: http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US
