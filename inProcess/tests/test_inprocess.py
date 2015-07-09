@@ -1,5 +1,5 @@
 import pytest
-import inprocess.inProcess as ip
+import inProcess as ip
 from inProcess import RecordError
 import json
 from datetime import datetime  # timedelta
