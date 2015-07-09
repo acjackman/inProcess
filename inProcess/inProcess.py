@@ -54,13 +54,13 @@ def main(settings_file='~/.inprocess.json', opt_location=False):
 
     # Import all Parseable classes from parseables folder
     plugin_base = PluginBase(package='parseables')
-    plugin_source = plugin_base.make_plugin_source(searchpath=['inProcess/parseables'])
+    parsables_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'parseables/');
+    plugin_source = plugin_base.make_plugin_source(searchpath=[parsables_dir])
     for plugin_name in plugin_source.list_plugins():
             plugin = plugin_source.load_plugin(plugin_name)
 
     # List parseable things
     parseables = Parseable.__subclasses__()  # list all direct subclasses of Parseable
-    print(parseables)
 
     # Grab the list of inx files from the inbox directory, plus the inbox file
     files = os.listdir(settings['inbox_dir'])
