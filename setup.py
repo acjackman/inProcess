@@ -18,6 +18,9 @@ setup(
     platforms='any',
     install_requires=[
         'click',
+        'pluginbase',
+        'PyYAML',
+        'datetime',
     ],
     entry_points={
         'console_scripts': [
@@ -41,7 +44,6 @@ setup(
         'Operating System :: Unix',
         'Operating System :: Windows',
         'Programming Language :: Python',
-        # 'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]
