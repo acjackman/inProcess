@@ -10,7 +10,7 @@ def get_app_dir():
     return click.get_app_dir(APP_NAME, force_posix=True)
 
 
-def read_settings(settings_file = None):
+def read_settings(settings_file=None):
     # If using custom settings, don't prompt to init
     default_settings = False
 
@@ -28,7 +28,7 @@ def read_settings(settings_file = None):
             contents = settings_file.read()
 
         settings = json.loads(contents)
-    except FileNotFoundError as e:
+    except FileNotFoundError:
         # Couldn't find the settings file
         raise click.UsageError('No settings found, run "inp init" to create default settings')
 
@@ -69,6 +69,7 @@ def settings(config):
     """Display settings"""
     click.echo("Settings Loaded: %s" % config.settings)
 
+
 @cli.command()
 @pass_config
 def init(config):
@@ -89,3 +90,10 @@ def init(config):
 
     # inx archive
     os.makedirs(default_settings['inx_archive'])
+
+
+@cli.command()
+@pass_config
+def inbox(config):
+    """open inbox.yaml in a text editor"""
+    click.edit(config.settings['inbox'])

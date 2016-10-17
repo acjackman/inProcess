@@ -11,13 +11,13 @@ def runner():
     return CliRunner()
 
 
-def test_cli_settings_file(runner):
+def test_cli_init_creates_defaults(runner):
     app_dir = "inprocess"
     env_vars = {}
 
     with patch.object(command_line, 'get_app_dir', return_value=app_dir), \
             runner.isolated_filesystem():
-        result = runner.invoke(command_line.cli, ['init'], env = env_vars)
+        result = runner.invoke(command_line.cli, ['init'], env=env_vars)
         print(result.output)
         assert not result.exception
         assert result.exit_code == 0
@@ -31,4 +31,3 @@ def test_cli_settings_file(runner):
         # inx archive folder
         assert os.path.exists(os.path.join(app_dir, "inx_archive"))
         assert os.path.isdir(os.path.join(app_dir, "inx_archive"))
-
