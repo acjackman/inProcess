@@ -18,6 +18,7 @@ setup(
     platforms='any',
     install_requires=[
         'click',
+        'pluginbase',
     ],
     entry_points={
         'console_scripts': [

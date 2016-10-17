@@ -31,3 +31,7 @@ def test_cli_init_creates_defaults(runner):
         # inx archive folder
         assert os.path.exists(os.path.join(app_dir, "inx_archive"))
         assert os.path.isdir(os.path.join(app_dir, "inx_archive"))
+
+        # parseables folder
+        assert os.path.exists(os.path.join(app_dir, "parseables"))
+        assert os.path.isdir(os.path.join(app_dir, "parseables"))
