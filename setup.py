@@ -3,8 +3,6 @@ Process and manage short note files.
 """
 from setuptools import find_packages, setup
 
-dependencies = ['click']
-
 setup(
     name='inprocess',
     version='0.1.0',
@@ -18,11 +16,13 @@ setup(
     include_package_data=True,
     zip_safe=False,
     platforms='any',
-    install_requires=dependencies,
+    install_requires=[
+        'click',
+    ],
     entry_points={
         'console_scripts': [
-            'inprc = inprocess.cli:main',
-        ],
+            'inp = inprocess.command_line:cli',
+        ]
     },
     classifiers=[
         # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers

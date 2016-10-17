@@ -28,6 +28,7 @@ MANIFEST
 # Testing
 .tox/
 .coverage
+.cache/r
 
 # Installer logs
 pip-log.txt

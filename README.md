@@ -11,6 +11,7 @@ Here are [installation instructions](https://github.com/mitsuhiko/pipsi#readme).
 
 Simply run:
 
+    $ pip install --editable .
     $ pipsi install .
 
 
@@ -18,7 +19,7 @@ Simply run:
 
 To use it:
 
-    $ inprc --help
+    $ inp --help
 
 
 ## Tests

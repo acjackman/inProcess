@@ -3,7 +3,7 @@ import os
 
 import json
 
-APP_NAME = "InProcess"
+APP_NAME = "inprocess"
 
 
 def read_settings(settings_file = None):
@@ -33,9 +33,27 @@ def read_settings(settings_file = None):
     # This prevents files from being processed if data can't be written
     return settings
 
-@click.command()
+
+class Config(object):
+
+    def __init__(self):
+        self.settings = None
+
+
+pass_config = click.make_pass_decorator(Config, ensure=True)
+
+
+@click.group()
 @click.option('--settings', '-s', type=click.File(), required=False, envvar='INPROCESS_SETTINGS')
-def main(settings):
+@pass_config
+def cli(config, settings):
     """Process and manage short note files."""
-    settings_values = read_settings(settings)
-    click.echo("Settings Loaded: %s" % settings_values)
+    config.settings = read_settings(settings)
+
+
+@cli.command()
+@pass_config
+def settings(config):
+    """Display settings"""
+    click.echo("Settings Loaded: %s" % config.settings)
+

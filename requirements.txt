@@ -10,6 +10,7 @@ py==1.4.31
 pycodestyle==2.0.0
 pyflakes==1.2.3
 pytest==3.0.3
+pytest-catchlog==1.2.2
 pytest-cov==2.4.0
 python-termstyle==0.1.10
 sniffer==0.3.5
