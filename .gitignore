@@ -36,3 +36,4 @@ pip-delete-this-directory.txt
 # Development Enviornment
 *.sublime-workspace
 *.sublime-project
+/.gtm/

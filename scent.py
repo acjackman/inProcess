@@ -39,7 +39,15 @@ def execute_tests(*args):
     This example simply runs nose.
     """
 
-    fn = ['py.test', '--cov', 'inprocess']
+    fn = [
+        'py.test',
+        '--log-format="%(asctime)s %(levelname)s %(message)s"',
+        '--log-date-format="%Y-%m-%d %H:%M:%S"',
+        # Coverage packages
+        '--cov',
+        'inprocess',
+        # '-s',
+    ]
 
     args = set(args[1:])
 

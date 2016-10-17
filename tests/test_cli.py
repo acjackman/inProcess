@@ -8,22 +8,38 @@ def runner():
     return CliRunner()
 
 
-def test_cli(runner):
-    result = runner.invoke(cli.main)
-    assert result.exit_code == 0
-    assert not result.exception
-    assert result.output.strip() == 'Hello, world.'
+def test_cli_no_settings_file(runner):
+    # There is a bug with this test if there is actually an
+    # "INPROCESS_SETTINGS" environment variable
+    env_vars = {}
 
+    with runner.isolated_filesystem():
+        result = runner.invoke(cli.main, env = env_vars)
+        print(result.output)
+        assert result.exception
+        assert result.exit_code == 2
 
-def test_cli_with_option(runner):
-    result = runner.invoke(cli.main, ['--as-cowboy'])
-    assert result.exit_code == 0
-    assert not result.exception
-    assert result.output.strip() == 'Howdy, world.'
+        assert '"in init"' in result.output.strip()
 
+def test_cli_no_settings_file_with_env_var(runner):
 
-def test_cli_with_arg(runner):
-    result = runner.invoke(cli.main, ['Adam'])
-    assert result.exit_code == 0
-    assert not result.exception
-    assert result.output.strip() == 'Hello, Adam.'
+    env_vars = {"INPROCESS_SETTINGS": "settings.json"}
+
+    with runner.isolated_filesystem():
+        result = runner.invoke(cli.main, env = env_vars)
+        print(result.output)
+        assert result.exception
+        assert result.exit_code == 2
+
+def test_cli_settings_file(runner):
+
+    env_vars = {"INPROCESS_SETTINGS": "settings.json"}
+
+    with runner.isolated_filesystem():
+        with open('settings.json', 'w') as f:
+            f.write('{}')
+
+        result = runner.invoke(cli.main, env = env_vars)
+        print(result.output)
+        assert not result.exception
+        assert result.exit_code == 0
