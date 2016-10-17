@@ -79,5 +79,13 @@ def init(config):
         os.makedirs(app_dir)
 
     # Settings file
+    default_settings = {
+        'inbox': os.path.join(app_dir, 'inbox.yaml'),
+        'inx_archive': os.path.join(app_dir, 'inx_archive'),
+    }
+
     with open(os.path.join(app_dir, 'settings.json'), 'w') as f:
-        f.write('{}')
+        f.write(json.dumps(default_settings))
+
+    # inx archive
+    os.makedirs(default_settings['inx_archive'])
