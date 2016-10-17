@@ -11,7 +11,7 @@ def runner():
     return CliRunner()
 
 
-@pytest.mark.skip(reason="Need to write Parseables first")
+# @pytest.mark.skip(reason="Need to write Parseables first")
 def test_cli_process_single_file(runner):
     app_dir = "inprocess"
     env_vars = {}
@@ -25,13 +25,13 @@ def test_cli_process_single_file(runner):
         notes_dir = 'Notes'
         os.makedirs(notes_dir)
 
-        with open(os.path.join('inx.md'), 'w') as f:
+        with open(os.path.join(app_dir, 'inbox_dir', 'inx.md'), 'w') as f:
             f.write('A thought')
 
         # Run inprocess
-        result = runner.invoke(command_line.cli, env=env_vars)
+        result = runner.invoke(command_line.cli, ['process'], env=env_vars)
         print(result.output)
-        assert result.exception
+        assert not result.exception
         assert result.exit_code == 0
 
         # File is moved to archive
