@@ -34,7 +34,7 @@ MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Development Enviornment
+# Development Environment
 *.sublime-workspace
 *.sublime-project
 /.gtm/
