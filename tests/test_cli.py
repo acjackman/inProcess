@@ -17,22 +17,24 @@ def test_cli_no_settings_file(runner):
 
     with patch.object(command_line, 'get_app_dir', return_value="inprocess"), \
             runner.isolated_filesystem():
-        result = runner.invoke(command_line.cli, ['settings'], env = env_vars)
+        result = runner.invoke(command_line.cli, ['settings'], env=env_vars)
         print(result.output)
         assert result.exception
         assert result.exit_code == 2
 
         assert '"inp init"' in result.output.strip()
 
+
 def test_cli_no_settings_file_with_env_var(runner):
     env_vars = {"INPROCESS_SETTINGS": "settings.json"}
 
     with patch.object(command_line, 'get_app_dir', return_value="inprocess"), \
             runner.isolated_filesystem():
-        result = runner.invoke(command_line.cli, ['settings'], env = env_vars)
+        result = runner.invoke(command_line.cli, ['settings'], env=env_vars)
         print(result.output)
         assert result.exception
         assert result.exit_code == 2
+
 
 def test_cli_settings_file(runner):
     env_vars = {"INPROCESS_SETTINGS": "settings.json"}
@@ -42,7 +44,7 @@ def test_cli_settings_file(runner):
         with open('settings.json', 'w') as f:
             f.write('{}')
 
-        result = runner.invoke(command_line.cli, ['settings'], env = env_vars)
+        result = runner.invoke(command_line.cli, ['settings'], env=env_vars)
         print(result.output)
         assert not result.exception
         assert result.exit_code == 0
