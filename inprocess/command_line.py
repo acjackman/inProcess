@@ -80,7 +80,7 @@ CONTEXT_SETTINGS = dict(
     default_map={'process': {}}
 )
 
-# @click.group()
+
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.option('--settings', '-s', type=click.Path(), required=False, envvar='INPROCESS_SETTINGS')
 @pass_config
