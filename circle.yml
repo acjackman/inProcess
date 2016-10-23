@@ -1,5 +1,6 @@
 machine:
   python:
     version: 3.5.2
-general:
-  build_dir: inProcess
+test:
+  override:
+    - py.test --log-format="%(asctime)s %(levelname)s %(message)s" --log-date-format="%Y-%m-%d %H:%M:%S" --cov inprocess tests/
