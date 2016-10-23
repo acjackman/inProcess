@@ -33,3 +33,4 @@ testscenarios==0.5.0
 contextlib2==0.5.4
 testresources==2.0.1
 wheel==0.29.0
+pytest-circleci==0.0.2
