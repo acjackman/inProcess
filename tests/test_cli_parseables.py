@@ -1,6 +1,6 @@
 import pytest
 from click.testing import CliRunner
-from unittest.mock import patch
+from mock import patch
 
 from inprocess import command_line
 
