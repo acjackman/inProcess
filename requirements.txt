@@ -17,3 +17,4 @@ sniffer==0.3.5
 tox==2.4.1
 tox-pyenv==1.0.3
 virtualenv==15.0.3
+mock==2.0.0
