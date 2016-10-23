@@ -1,6 +1,6 @@
 machine:
-  post:
-    - pyenv global 3.5.2
+  python:
+    version: 3.5.2
 test:
   override:
     - py.test --log-format="%(asctime)s %(levelname)s %(message)s" --log-date-format="%Y-%m-%d %H:%M:%S" --cov inprocess
